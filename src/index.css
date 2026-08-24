@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-display: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand palette — variant 3 (dark) */
+  --color-ink: #150500;
+  --color-ink-900: #210b03;
+  --color-ink-800: #250901;
+  --color-ink-700: #37130a;
+  --color-cream: #fbfaf8;
+  --color-card: #f9f6f1;
+  --color-muted: #57534e;
+  --color-ember: #68230e;
+  --color-amber: #e08a2b;
+  --color-cta: #292524;
+}
+
+:root {
+  /* horizontal page gutter, matches section px (px-6 / md:px-16) */
+  --page-gutter: 1.5rem;
+}
+@media (min-width: 768px) {
+  :root {
+    --page-gutter: 4rem;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
