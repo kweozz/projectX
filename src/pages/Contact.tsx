@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
 import { ArrowRight } from '../components/icons'
+import heroBg from '../assets/hero/hero-bg.mp4'
+import heroPoster from '../assets/hero/hero-bg.webp'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -47,22 +49,24 @@ export default function Contact() {
     <div className="bg-ink-900">
       <Navbar />
 
-      {/* Hero (dark) */}
-      <header className="bg-ink-900 px-6 pb-16 pt-36 md:px-16 md:pb-24 md:pt-44">
-        <div className="mx-auto max-w-[1600px]">
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, ease }}
-            className="font-display text-sm uppercase tracking-[0.12em] text-amber"
-          >
-            Contact
-          </motion.p>
+      {/* Hero (dark, amber video bg) — same layout as the projects overview */}
+      <header className="relative flex min-h-[62vh] items-end overflow-hidden bg-ink-900">
+        <video
+          src={heroBg}
+          poster={heroPoster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 size-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-ink/85 via-ink/40 to-transparent" />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 pb-16 pt-40 md:px-16 md:pb-24">
           <motion.h1
             initial={{ y: 24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.05, ease }}
-            className="mt-5 max-w-[18ch] font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white"
+            transition={{ duration: 0.7, ease }}
+            className="max-w-[18ch] font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white"
           >
             Laten we uw 2032 scherpstellen.
           </motion.h1>
@@ -70,7 +74,7 @@ export default function Contact() {
             initial={{ y: 24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.1, ease }}
-            className="mt-6 max-w-[620px] font-display text-lg leading-relaxed text-white/70 md:text-xl"
+            className="mt-6 max-w-[620px] font-display text-lg leading-relaxed text-white/80 md:text-2xl"
           >
             Een eerste gesprek verplicht tot niets en levert u hoe dan ook een scherper
             beeld op. Laat iets achter — we reageren binnen één werkdag.
