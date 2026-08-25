@@ -61,10 +61,10 @@ export default function Navbar() {
           )}
           <Link
             to="/contact"
-            className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-cream px-6 font-display text-base font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5"
+            className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-cream px-5 font-display text-sm font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5"
           >
-            Plan een gesprek
-            <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            Contacteer ons
+            <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
 
@@ -118,10 +118,10 @@ export default function Navbar() {
           <Link
             to="/contact"
             onClick={() => setOpen(false)}
-            className="inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cream px-6 font-display text-base font-medium uppercase text-ink"
+            className="inline-flex h-11 w-fit items-center justify-center gap-2 rounded-full bg-cream px-5 font-display text-sm font-medium uppercase text-ink"
           >
-            Plan een gesprek
-            <ArrowUpRight className="size-5" />
+            Contacteer ons
+            <ArrowUpRight className="size-4" />
           </Link>
         </motion.div>
       )}
