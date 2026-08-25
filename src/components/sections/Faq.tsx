@@ -108,7 +108,7 @@ export default function Faq() {
           </h2>
 
           <a
-            href="#contact"
+            href="/contact"
             className="group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cta px-6 font-display text-base font-medium text-cream transition-transform duration-200 hover:-translate-y-0.5"
           >
             Plan een gesprek

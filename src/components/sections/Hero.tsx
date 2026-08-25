@@ -75,13 +75,13 @@ export default function Hero() {
 
           <motion.div variants={item} className="flex flex-wrap items-center gap-6">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center rounded-full bg-cream px-5 py-3 font-sans text-sm font-medium uppercase tracking-tight text-ink-800 transition-transform duration-200 hover:-translate-y-0.5"
             >
               Plan een gesprek
             </a>
             <a
-              href="#scan"
+              href="/contact"
               className="group inline-flex items-center gap-2 font-sans text-sm font-medium uppercase tracking-tight text-white"
             >
               <span className="underline decoration-from-font underline-offset-4">

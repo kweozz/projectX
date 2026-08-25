@@ -13,11 +13,21 @@ const ease = [0.22, 1, 0.36, 1] as const
 const LINK_COLUMNS = [
   {
     title: 'Diensten',
-    links: ['2032-Scan', 'Roadmap-traject', 'Samenwerking', 'Tarieven'],
+    links: [
+      { label: '2032-Scan', href: '/#diensten' },
+      { label: 'Roadmap-traject', href: '/#diensten' },
+      { label: 'Samenwerking', href: '/#diensten' },
+      { label: 'Tarieven', href: '/#diensten' },
+    ],
   },
   {
     title: 'Bedrijf',
-    links: ['Over ons', 'Onze aanpak', 'Cases', 'Contact'],
+    links: [
+      { label: 'Over ons', href: '/#aanpak' },
+      { label: 'Onze aanpak', href: '/#aanpak' },
+      { label: 'Cases', href: '/cases' },
+      { label: 'Contact', href: '/contact' },
+    ],
   },
 ]
 
@@ -80,14 +90,14 @@ export default function Footer() {
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-6">
             <a
-              href="#contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-display text-sm font-medium uppercase tracking-tight text-ink transition-transform duration-200 hover:-translate-y-0.5"
             >
               Plan een gesprek
               <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </a>
             <a
-              href="#scan"
+              href="/contact"
               className="group inline-flex items-center gap-2 font-display text-sm font-medium uppercase tracking-tight text-white"
             >
               <span className="underline decoration-from-font underline-offset-4">
@@ -116,7 +126,7 @@ export default function Footer() {
                   gedragen door uw team.
                 </p>
                 <p className="leading-relaxed text-[#a69f9b]">
-                  Vlaanderenstraat 42, 9000 Gent · info@lumen2032.be · +32 (0)9 281 33 00
+                  Prins Boudewijnlaan 24E, 2550 Kontich · info@lumen2032.be · +32 (0)9 281 33 00
                 </p>
               </div>
             </div>
@@ -130,9 +140,9 @@ export default function Footer() {
                   </p>
                   <ul className="flex flex-col gap-3 font-display text-sm text-[#e2e0db]">
                     {col.links.map((link) => (
-                      <li key={link}>
-                        <a href="#" className="transition-colors hover:text-white">
-                          {link}
+                      <li key={link.label}>
+                        <a href={link.href} className="transition-colors hover:text-white">
+                          {link.label}
                         </a>
                       </li>
                     ))}

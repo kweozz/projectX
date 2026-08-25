@@ -1,5 +1,8 @@
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowUpRight } from '../icons'
+import { Link } from 'react-router-dom'
+import { ArrowRight, ArrowUpRight } from '../icons'
+import CaseMedia from '../CaseMedia'
 import argenta from '../../assets/projects/argenta.webp'
 import bedrijfX from '../../assets/projects/bedrijf-x.webp'
 import plaza from '../../assets/projects/plaza.webp'
@@ -9,34 +12,27 @@ type Project = {
   image: string
   objectPosition?: string
   tags: string[]
+  to?: string
 }
 
 const PROJECTS: Project[] = [
-  { name: 'ARGENTA', image: argenta, objectPosition: '70% 50%', tags: ['Roadmap-traject'] },
-  { name: 'BEDRIJF X', image: bedrijfX, tags: ['2032 scan', 'Maak industrie'] },
-  { name: 'BEDRIJF X', image: plaza, tags: ['2032 scan', 'Maak industrie'] },
+  { name: 'ARGENTA', image: argenta, objectPosition: '70% 50%', tags: ['Roadmap-traject'], to: '/case/argenta' },
+  { name: 'BEDRIJF X', image: bedrijfX, tags: ['2032 scan', 'Maak industrie'], to: '/case/argenta' },
+  { name: 'BEDRIJF X', image: plaza, tags: ['2032 scan', 'Maak industrie'], to: '/case/argenta' },
 ]
 
 const ease = [0.22, 1, 0.36, 1] as const
 
 function ProjectCard({ project }: { project: Project }) {
-  return (
-    <motion.a
-      href="#projecten"
-      variants={{
-        hidden: { opacity: 0, y: 32 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
-      }}
-      className="group flex w-[85vw] shrink-0 snap-start flex-col gap-8 sm:w-[560px] lg:w-[644px]"
-    >
-      <div className="overflow-hidden rounded-[10px] bg-[#f5f5f4]">
-        <img
-          src={project.image}
-          alt={project.name}
-          style={{ objectPosition: project.objectPosition }}
-          className="h-[380px] w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105 lg:h-[508px]"
-        />
-      </div>
+  const inner = (
+    <>
+      <CaseMedia
+        src={project.image}
+        alt={project.name}
+        objectPosition={project.objectPosition}
+        className="h-[380px] lg:h-[508px]"
+        interactive={!!project.to}
+      />
 
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
@@ -56,7 +52,27 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
         <div className="h-px w-full bg-[rgba(90,98,113,0.35)]" />
       </div>
-    </motion.a>
+    </>
+  )
+
+  const cls = 'group flex h-full flex-col gap-8'
+
+  return (
+    <motion.div
+      variants={{
+        hidden: { opacity: 0, y: 32 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+      }}
+      className="w-[85vw] shrink-0 snap-start sm:w-[560px] lg:w-[644px]"
+    >
+      {project.to ? (
+        <Link to={project.to} className={cls}>
+          {inner}
+        </Link>
+      ) : (
+        <div className={cls}>{inner}</div>
+      )}
+    </motion.div>
   )
 }
 
@@ -64,6 +80,22 @@ export default function Projects() {
   // Left inset that lines up with the centered max-w-[1600px] content column.
   const gutterLeft =
     'max(var(--page-gutter), calc((100vw - 1600px) / 2 + var(--page-gutter)))'
+
+  const galleryRef = useRef<HTMLDivElement>(null)
+
+  const step = (dir: -1 | 1) => {
+    const el = galleryRef.current
+    if (!el) return
+    const first = el.children[0] as HTMLElement | undefined
+    const gap = parseFloat(getComputedStyle(el).columnGap || '0')
+    const amount = (first?.offsetWidth ?? 600) + gap
+    // Snap-mandatory fights a smooth programmatic scroll; disable it briefly.
+    el.style.scrollSnapType = 'none'
+    el.scrollBy({ left: dir * amount, behavior: 'smooth' })
+    window.setTimeout(() => {
+      el.style.scrollSnapType = ''
+    }, 500)
+  }
 
   return (
     <section id="projecten" className="bg-ink-900 py-20 md:py-30">
@@ -79,20 +111,22 @@ export default function Projects() {
           <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.018em] text-white">
             Projecten
           </h2>
-          <a
-            href="#projecten"
+          <Link
+            to="/cases"
             className="group inline-flex items-center gap-2 rounded-full border border-[#78716c] px-6 py-4 font-display text-base font-medium uppercase tracking-tight text-white transition-colors duration-200 hover:border-white"
           >
             <span className="underline decoration-from-font underline-offset-4">
               Al onze projecten bekijken
             </span>
             <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          </Link>
         </motion.div>
       </div>
 
-      {/* Horizontal gallery — full-bleed: left aligns with header, runs off the right edge */}
+      {/* Horizontal gallery — full-bleed: left aligns with header, runs off the right edge.
+          Navigate with the arrow buttons below, or scroll (trackpad/touch). */}
       <motion.div
+        ref={galleryRef}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '0px 0px -20% 0px' }}
@@ -108,6 +142,26 @@ export default function Projects() {
           <ProjectCard key={i} project={project} />
         ))}
       </motion.div>
+
+      {/* Prev / next controls — aligned with the content gutter */}
+      <div className="mx-auto mt-8 flex max-w-[1600px] gap-3 px-6 md:px-16">
+        <button
+          type="button"
+          onClick={() => step(-1)}
+          aria-label="Vorige"
+          className="flex size-12 items-center justify-center rounded-full border border-white/30 text-white transition-colors hover:border-white"
+        >
+          <ArrowRight className="size-4 rotate-180" />
+        </button>
+        <button
+          type="button"
+          onClick={() => step(1)}
+          aria-label="Volgende"
+          className="flex size-12 items-center justify-center rounded-full border border-white/30 text-white transition-colors hover:border-white"
+        >
+          <ArrowRight className="size-4" />
+        </button>
+      </div>
     </section>
   )
 }

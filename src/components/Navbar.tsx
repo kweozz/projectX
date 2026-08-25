@@ -1,47 +1,71 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { ArrowUpRight } from './icons'
 import logo from '../assets/hero/logo.svg'
 
 const NAV_LINKS = [
-  { label: 'Onze aanpak', href: '#aanpak' },
-  { label: '2032 Scan', href: '#scan' },
+  { label: 'Onze aanpak', href: '/#aanpak' },
+  { label: 'Diensten', href: '/#diensten' },
+  { label: 'Cases', href: '/cases', route: true },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <motion.header
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute inset-x-0 top-0 z-50 bg-[rgba(104,35,14,0.48)] backdrop-blur-sm"
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        scrolled || open
+          ? 'border-b border-white/10 bg-ink-900/70 backdrop-blur-xl'
+          : 'bg-transparent'
+      }`}
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">
-        <a href="#top" className="flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-4">
           <img src={logo} alt="" className="size-[26px]" />
           <span className="font-sans text-2xl text-cream">Lumen</span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-7 md:flex">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="font-display text-base font-medium text-white/90 transition-colors hover:text-white"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#contact"
+          {NAV_LINKS.map((link) =>
+            link.route ? (
+              <Link
+                key={link.label}
+                to={link.href}
+                className="font-display text-base font-medium text-white/90 transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                className="font-display text-base font-medium text-white/90 transition-colors hover:text-white"
+              >
+                {link.label}
+              </a>
+            ),
+          )}
+          <Link
+            to="/contact"
             className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-cream px-6 font-display text-base font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5"
           >
             Plan een gesprek
             <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -68,26 +92,37 @@ export default function Navbar() {
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="flex flex-col gap-4 overflow-hidden bg-ink/95 px-6 pb-6 pt-2 backdrop-blur-md md:hidden"
+          className="flex flex-col gap-4 overflow-hidden px-6 pb-6 pt-2 md:hidden"
         >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className="font-display text-lg font-medium text-white/90"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#contact"
+          {NAV_LINKS.map((link) =>
+            link.route ? (
+              <Link
+                key={link.label}
+                to={link.href}
+                onClick={() => setOpen(false)}
+                className="font-display text-lg font-medium text-white/90"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="font-display text-lg font-medium text-white/90"
+              >
+                {link.label}
+              </a>
+            ),
+          )}
+          <Link
+            to="/contact"
             onClick={() => setOpen(false)}
             className="inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cream px-6 font-display text-base font-medium uppercase text-ink"
           >
             Plan een gesprek
             <ArrowUpRight className="size-5" />
-          </a>
+          </Link>
         </motion.div>
       )}
     </motion.header>

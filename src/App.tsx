@@ -1,27 +1,32 @@
-import Hero from './components/sections/Hero'
-import Stats from './components/sections/Stats'
-import Faq from './components/sections/Faq'
-import QuoteBanner from './components/sections/QuoteBanner'
-import Process from './components/sections/Process'
-import Projects from './components/sections/Projects'
-import Pricing from './components/sections/Pricing'
-import Sectors from './components/sections/Sectors'
-import Partners from './components/sections/Partners'
-import Footer from './components/sections/Footer'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import Home from './pages/Home'
+import Cases from './pages/Cases'
+import CaseArgenta from './pages/CaseArgenta'
+import Contact from './pages/Contact'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    // Jump instantly — the global `scroll-behavior: smooth` would otherwise
+    // animate a scroll from the previous position up to the top on navigation.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+  }, [pathname])
+  return null
+}
 
 export default function App() {
   return (
-    <main>
-      <Hero />
-      <Stats />
-      <Faq />
-      <QuoteBanner />
-      <Process />
-      <Projects />
-      <Pricing />
-      <Sectors />
-      <Partners />
-      <Footer />
-    </main>
+    <BrowserRouter>
+      <ScrollToTop />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/cases" element={<Cases />} />
+          <Route path="/case/argenta" element={<CaseArgenta />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </main>
+    </BrowserRouter>
   )
 }

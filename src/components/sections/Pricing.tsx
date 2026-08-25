@@ -89,7 +89,7 @@ function PricingCard({ plan }: { plan: Plan }) {
       </ul>
 
       <a
-        href="#contact"
+        href="/contact"
         className="group mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-full bg-cta px-6 font-display text-base font-medium uppercase text-cream transition-transform duration-200 hover:-translate-y-0.5"
       >
         Plan een gesprek

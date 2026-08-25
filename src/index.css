@@ -3,7 +3,7 @@
 @theme {
   /* Fonts */
   --font-display: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
 
   /* Brand palette — variant 3 (dark) */
   --color-ink: #150500;
@@ -38,6 +38,27 @@ html {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Reeded / fluted-glass look for non-active carousel slides.
+   The refraction itself comes from an SVG displacement filter applied to a
+   duplicated image layer (.reeded-layer); this class only adds the glassy
+   vertical highlight sheen on top of the ribs. */
+.reeded-layer {
+  filter: url(#reeded-glass) blur(1.2px) brightness(0.98);
+}
+.fluted-glass {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.22) 0px,
+    rgba(255, 255, 255, 0.04) 2px,
+    rgba(255, 255, 255, 0) 4px,
+    rgba(0, 0, 0, 0.05) 8px,
+    rgba(255, 255, 255, 0) 12px,
+    rgba(255, 255, 255, 0.04) 14px,
+    rgba(255, 255, 255, 0.22) 16px
+  );
+  mix-blend-mode: screen;
 }
 
 body {

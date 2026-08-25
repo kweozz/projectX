@@ -43,7 +43,7 @@ export default function Process() {
               een leverancier gaat.
             </p>
             <a
-              href="#contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 rounded-full border border-[#78716c] px-6 py-4 font-display text-base font-medium uppercase tracking-tight text-ink transition-colors duration-200 hover:border-ink"
             >
               <span className="underline decoration-from-font underline-offset-4">

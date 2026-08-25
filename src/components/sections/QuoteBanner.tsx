@@ -7,11 +7,7 @@ export default function QuoteBanner() {
     <section className="bg-ink">
       <div className="relative flex min-h-[480px] items-center overflow-hidden md:min-h-[612px]">
         {/* Background image + overlay */}
-        <img
-          src={quoteBg}
-          alt=""
-          className="absolute inset-0 size-full object-cover"
-        />
+        <img src={quoteBg} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-black/35" />
 
         {/* Quote */}
