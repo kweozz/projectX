@@ -26,7 +26,7 @@ export default function CaseMedia({
   className = '',
   objectPosition,
   interactive = true,
-  label = 'View case',
+  label = 'Bekijk project',
 }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [hover, setHover] = useState(false)
@@ -82,11 +82,11 @@ export default function CaseMedia({
             className="pointer-events-none absolute left-0 top-0 z-10"
           >
             <motion.div
-              className="flex size-[104px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1 rounded-full bg-cream text-ink shadow-[0_10px_30px_rgba(21,5,0,0.18)]"
+              className="flex size-[116px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1 rounded-full bg-cream px-3 text-center text-ink shadow-[0_10px_30px_rgba(21,5,0,0.18)]"
               animate={{ scale: hover ? 1 : 0.4, opacity: hover ? 1 : 0 }}
               transition={{ type: 'spring', stiffness: 320, damping: 22 }}
             >
-              <span className="font-display text-sm font-medium uppercase tracking-tight">
+              <span className="font-display text-sm font-medium uppercase leading-tight tracking-tight">
                 {label}
               </span>
               <ArrowUpRight className="size-4" />

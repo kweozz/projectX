@@ -25,7 +25,7 @@ const LINK_COLUMNS = [
     links: [
       { label: 'Over ons', href: '/#aanpak' },
       { label: 'Onze aanpak', href: '/#aanpak' },
-      { label: 'Cases', href: '/cases' },
+      { label: 'Projecten', href: '/cases' },
       { label: 'Contact', href: '/contact' },
     ],
   },

@@ -7,7 +7,7 @@ import logo from '../assets/hero/logo.svg'
 const NAV_LINKS = [
   { label: 'Onze aanpak', href: '/#aanpak' },
   { label: 'Diensten', href: '/#diensten' },
-  { label: 'Cases', href: '/cases', route: true },
+  { label: 'Projecten', href: '/cases', route: true },
 ]
 
 export default function Navbar() {

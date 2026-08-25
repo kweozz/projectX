@@ -39,10 +39,11 @@ function CaseCard({ c, featured = false }: { c: Case; featured?: boolean }) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -15% 0px' }}
       exit={{ opacity: 0, y: 12 }}
-      transition={{ duration: 0.5, ease }}
+      transition={{ duration: 0.6, ease }}
     >
       <Link to={c.to} className="group flex flex-col gap-8">
         <CaseMedia
@@ -120,7 +121,13 @@ export default function Cases() {
       <section className="bg-white py-16 md:py-24">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-16 px-6 md:px-16">
           {/* Filter bar */}
-          <div className="flex flex-col gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '0px 0px -15% 0px' }}
+            transition={{ duration: 0.6, ease }}
+            className="flex flex-col gap-6"
+          >
             <p className="font-display text-2xl font-semibold text-ink">Filter op</p>
             <div className="flex flex-wrap gap-3">
               {FILTERS.map((f) => {
@@ -142,7 +149,7 @@ export default function Cases() {
               })}
             </div>
             <div className="h-px w-full bg-[rgba(90,98,113,0.2)]" />
-          </div>
+          </motion.div>
 
           {/* Cases */}
           {filtered.length === 0 ? (
