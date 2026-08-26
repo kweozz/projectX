@@ -1,21 +1,25 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import 'lenis/dist/lenis.css'
 import Home from './pages/Home'
 import Cases from './pages/Cases'
 import CaseArgenta from './pages/CaseArgenta'
 import Contact from './pages/Contact'
+import { useSmoothScroll, getLenis } from './hooks/useSmoothScroll'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
-    // Jump instantly — the global `scroll-behavior: smooth` would otherwise
-    // animate a scroll from the previous position up to the top on navigation.
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+    // Jump to the top instantly on navigation (via Lenis when active).
+    const lenis = getLenis()
+    if (lenis) lenis.scrollTo(0, { immediate: true })
+    else window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
   }, [pathname])
   return null
 }
 
 export default function App() {
+  useSmoothScroll()
   return (
     <BrowserRouter>
       <ScrollToTop />

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import MaskedText from '../MaskedText'
 import bouw from '../../assets/sectors/bouw.webp'
 import maak from '../../assets/sectors/maak.webp'
 import zorg from '../../assets/sectors/zorg.webp'
@@ -48,7 +49,7 @@ export default function Sectors() {
           transition={{ duration: 0.7, ease }}
           className="font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.018em] text-white"
         >
-          Strategische focus per sector
+          <MaskedText>Strategische focus per sector</MaskedText>
         </motion.h2>
 
         <motion.div

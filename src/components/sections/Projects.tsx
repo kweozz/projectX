@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ArrowUpRight } from '../icons'
 import CaseMedia from '../CaseMedia'
+import MaskedText from '../MaskedText'
 import argenta from '../../assets/projects/argenta.webp'
 import bedrijfX from '../../assets/projects/bedrijf-x.webp'
 import plaza from '../../assets/projects/plaza.webp'
@@ -109,7 +110,7 @@ export default function Projects() {
           className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end"
         >
           <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.018em] text-white">
-            Projecten
+            <MaskedText>Projecten</MaskedText>
           </h2>
           <Link
             to="/cases"

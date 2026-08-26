@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Navbar from '../Navbar'
+import MaskedText from '../MaskedText'
 import { ArrowUpRight } from '../icons'
 import heroPoster from '../../assets/hero/hero-bg.webp'
 import heroVideo from '../../assets/hero/hero-bg.mp4'
@@ -62,7 +63,7 @@ export default function Hero() {
               variants={item}
               className="max-w-[625px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.27] tracking-[-0.019em] text-white"
             >
-              Waar staat uw bedrijf in 2032?
+              <MaskedText onMount>Waar staat uw bedrijf in 2032?</MaskedText>
             </motion.h1>
             <motion.p
               variants={item}

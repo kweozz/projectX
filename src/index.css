@@ -28,9 +28,8 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* Smooth scrolling is handled by Lenis (see useSmoothScroll); the native
+   CSS smooth-scroll would fight it, so it's intentionally omitted here. */
 
 .no-scrollbar {
   scrollbar-width: none;

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import CountUp from '../CountUp'
+import MaskedText from '../MaskedText'
 import card1 from '../../assets/stats/card1.webp'
 import card2 from '../../assets/stats/card2.webp'
 import card3 from '../../assets/stats/card3.webp'
@@ -96,7 +97,7 @@ export default function Stats() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-4xl font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-white"
         >
-          Veel visies worden vandaag niet gerealiseerd
+          <MaskedText>Veel visies worden vandaag niet gerealiseerd</MaskedText>
         </motion.h2>
 
         <motion.div
