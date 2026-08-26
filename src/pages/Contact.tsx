@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
 import { ArrowRight } from '../components/icons'
+import MaskedText from '../components/MaskedText'
 import heroBg from '../assets/hero/hero-bg.mp4'
 import heroPoster from '../assets/hero/hero-bg.webp'
 
@@ -68,7 +69,7 @@ export default function Contact() {
             transition={{ duration: 0.7, ease }}
             className="max-w-[18ch] font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white"
           >
-            Laten we uw 2032 scherpstellen.
+            <MaskedText onMount>Laten we uw 2032 scherpstellen.</MaskedText>
           </motion.h1>
           <motion.p
             initial={{ y: 24, opacity: 0 }}

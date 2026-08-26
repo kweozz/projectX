@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
 import { ArrowRight } from '../components/icons'
 import CaseMedia from '../components/CaseMedia'
+import MaskedText from '../components/MaskedText'
 import heroBg from '../assets/hero/hero-bg.mp4'
 import heroPoster from '../assets/hero/hero-bg.webp'
 import argenta from '../assets/projects/argenta.webp'
@@ -103,7 +104,7 @@ export default function Cases() {
             transition={{ duration: 0.7, ease }}
             className="max-w-[16ch] font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white"
           >
-            Projecten die ertoe doen
+            <MaskedText onMount>Projecten die ertoe doen</MaskedText>
           </motion.h1>
           <motion.p
             initial={{ y: 24, opacity: 0 }}

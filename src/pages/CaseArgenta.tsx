@@ -5,12 +5,13 @@ import Footer from '../components/sections/Footer'
 import CountUp from '../components/CountUp'
 import FlutedCarousel from '../components/FlutedCarousel'
 import ScrollRevealText from '../components/ScrollRevealText'
+import MaskedText from '../components/MaskedText'
 import { ArrowRight, CheckCircle, QuoteMark } from '../components/icons'
 import argenta from '../assets/projects/argenta.webp'
 import panel from '../assets/process/panel.webp'
 import stairs from '../assets/case/stairs.webp'
 import quoteTeam from '../assets/case/quote-team.webp'
-// Carousel photos — replace these 3 files with the real case photos (same names).
+// Carousel + block photos — replace with the real case photos (same names).
 import carouselWorkshop from '../assets/case/carousel-1-workshop.webp'
 import carouselBoardroom from '../assets/case/carousel-2-boardroom.webp'
 import carouselStrategy from '../assets/case/carousel-3-strategy.webp'
@@ -33,8 +34,6 @@ const RESULTS = [
   { value: 1, suffix: '', label: 'gedeeld 2032-plan voor het hele bedrijf' },
 ]
 
-// NOTE: placeholder long-form copy — replace with the real case narrative.
-// Two-tone intro statement: strong (dark) opening + soft (grey) continuation.
 const STORY_LEAD_STRONG =
   'Argenta had ambitieuze digitale doelen, maar de cijfers zaten verspreid over teams en systemen.'
 const STORY_LEAD_SOFT =
@@ -63,8 +62,6 @@ function Reveal({
   className?: string
   mount?: boolean
 }) {
-  // `mount` = animate on mount (for above-the-fold content). whileInView doesn't
-  // reliably fire for in-view elements after a client-side route change.
   const shared = {
     initial: { y: 24, opacity: 0 },
     transition: { duration: 0.7, delay, ease },
@@ -84,57 +81,80 @@ function Reveal({
   )
 }
 
+const bodyText =
+  'flex flex-col gap-5 font-display text-lg leading-relaxed text-muted md:text-xl'
+const subHeading =
+  'font-display text-2xl font-medium tracking-[-0.02em] text-ink md:text-[2rem]'
+
 export default function CaseArgenta() {
   return (
     <div className="bg-ink-900">
       <Navbar />
 
-      {/* 1 — Hero (dark) */}
-      <header className="bg-ink-900 pt-32 md:pt-40">
-        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
-          <Reveal mount>
-            <Link
-              to="/#projecten"
-              className="inline-flex items-center gap-2 font-display text-sm font-medium uppercase tracking-tight text-white/60 transition-colors hover:text-white"
-            >
-              <ArrowRight className="size-4 rotate-180" />
-              Alle projecten
-            </Link>
-          </Reveal>
-
-          <Reveal mount delay={0.05} className="mt-8 flex flex-wrap items-center gap-3">
-            {['Roadmap-traject', 'Banking'].map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-white/25 px-3.5 py-1.5 font-display text-sm font-medium uppercase tracking-tight text-white"
+      {/* 1 — Hero (dark): back link + tags + title + image + meta cards */}
+      <header className="bg-ink-900 pb-16 pt-32 md:pb-24 md:pt-40">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-10 px-6 md:px-16">
+          <div className="flex flex-col gap-6">
+            <Reveal mount>
+              <Link
+                to="/cases"
+                className="inline-flex items-center gap-2 font-display text-sm font-medium uppercase tracking-tight text-white/60 transition-colors hover:text-white"
               >
-                {tag}
-              </span>
-            ))}
+                <ArrowRight className="size-4 rotate-180" />
+                Alle projecten
+              </Link>
+            </Reveal>
+
+            <Reveal mount delay={0.05} className="flex flex-wrap items-center gap-3">
+              {['Roadmap-traject', 'Banking'].map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-[#78716c] px-3.5 py-1.5 font-display text-sm font-medium uppercase tracking-tight text-white"
+                >
+                  {tag}
+                </span>
+              ))}
+            </Reveal>
+
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="max-w-[20ch] font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white"
+            >
+              <MaskedText onMount delay={0.1}>
+                Van verspreide cijfers naar één helder 2032-plan
+              </MaskedText>
+            </motion.h1>
+
+            <Reveal mount delay={0.2}>
+              <p className="max-w-[900px] font-display text-lg leading-relaxed text-white/70 md:text-xl">
+                We brachten business, technologie en klantdata samen in één becijferde
+                roadmap — met werven, owners en meetbare doelen die het eigen team kan
+                dragen.
+              </p>
+            </Reveal>
+          </div>
+
+          <Reveal mount delay={0.25}>
+            <div className="overflow-hidden rounded-xl">
+              <img
+                src={argenta}
+                alt="Argenta"
+                className="h-[300px] w-full object-cover md:h-[490px]"
+                style={{ objectPosition: '50% 45%' }}
+              />
+            </div>
           </Reveal>
 
-          <Reveal mount delay={0.1}>
-            <h1 className="mt-8 max-w-[18ch] font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white">
-              Van verspreide cijfers naar één helder 2032-plan
-            </h1>
-          </Reveal>
-
-          <Reveal mount delay={0.15}>
-            <p className="mt-6 max-w-[900px] font-display text-lg leading-relaxed text-white/70 md:text-xl">
-              We brachten business, technologie en klantdata samen in één becijferde
-              roadmap — met werven, owners en meetbare doelen die het eigen team kan
-              dragen.
-            </p>
-          </Reveal>
-
-          <Reveal
-            mount
-            delay={0.2}
-            className="mt-12 grid grid-cols-2 gap-8 border-t border-white/15 pt-8 md:grid-cols-4"
-          >
+          {/* Meta as bordered cards (not table-lines) */}
+          <Reveal mount delay={0.3} className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {META.map((m) => (
-              <div key={m.label} className="flex flex-col gap-1">
-                <span className="font-display text-sm uppercase tracking-[0.08em] text-white/50">
+              <div
+                key={m.label}
+                className="flex flex-col gap-1 rounded-[10px] border border-[#44403c] bg-ink-900 p-4"
+              >
+                <span className="font-display text-sm uppercase tracking-[0.08em] text-[#d6d3d1]">
                   {m.label}
                 </span>
                 <span className="font-display text-lg font-medium text-white">
@@ -144,157 +164,165 @@ export default function CaseArgenta() {
             ))}
           </Reveal>
         </div>
-
-        <Reveal mount delay={0.25} className="mx-auto mt-16 max-w-[1600px] px-6 pb-20 md:px-16 md:pb-30">
-          <div className="overflow-hidden rounded-xl">
-            <img
-              src={argenta}
-              alt="Argenta"
-              className="h-[360px] w-full object-cover md:h-[560px]"
-            />
-          </div>
-        </Reveal>
       </header>
 
-      {/* 2 — Het verhaal: intro statement + sticky image with scrolling text (light) */}
-      <section className="bg-white pb-20 pt-16 md:pb-30">
-        {/* Intro statement — scroll-linked word-by-word colour reveal */}
-        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
+      {/* 2 — Het verhaal: intro + alternating image/text blocks (light) */}
+      <section className="bg-white pb-20 pt-16 md:pb-30 md:pt-24">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-20 px-6 md:gap-28 md:px-16">
+          {/* Intro statement — scroll-linked colour reveal */}
           <ScrollRevealText
             text={`${STORY_LEAD_STRONG} ${STORY_LEAD_SOFT}`}
             className="font-display text-[clamp(1.6rem,3vw,2.25rem)] font-semibold leading-[1.4] tracking-[-0.01em]"
           />
-        </div>
 
-        {/* Sticky image + scrolling text column */}
-        <div className="mx-auto mt-16 grid max-w-[1600px] grid-cols-1 gap-10 px-6 md:px-16 lg:grid-cols-[538px_1fr] lg:gap-12">
-          {/* Sticky image (left) */}
-          <div className="lg:sticky lg:top-28 lg:h-fit">
-            <div className="overflow-hidden rounded-md">
-              <img src={stairs} alt="" className="h-[300px] w-full object-cover md:h-[420px]" />
-            </div>
+          {/* Block A — image left / De uitdaging right */}
+          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
+            <Reveal>
+              <div className="overflow-hidden rounded-[10px] bg-card">
+                <img
+                  src={stairs}
+                  alt=""
+                  className="h-[340px] w-full object-cover md:h-[520px]"
+                />
+              </div>
+            </Reveal>
+            <Reveal delay={0.05}>
+              <div className="flex flex-col gap-6">
+                <h2 className={subHeading}>De uitdaging</h2>
+                <div className={bodyText}>
+                  <p>
+                    Elke afdeling werkte met een eigen dashboard, een eigen definitie van
+                    succes en een eigen prioriteitenlijst. Wat voor de ene ploeg een
+                    doorbraak was, telde voor de andere nauwelijks mee.
+                  </p>
+                  <p>
+                    Het gevolg: veel overleg, weinig richting. Investeringsbeslissingen
+                    bleven maanden hangen omdat niemand met zekerheid durfde zeggen welke
+                    euro het meeste zou opbrengen.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
           </div>
 
-          {/* Scrolling text (right) */}
-          <div className="flex max-w-[720px] flex-col gap-14">
-            <Reveal>
-              <h2 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink">
-                De uitdaging
-              </h2>
-              <div className="mt-6 flex flex-col gap-5 font-display text-xl leading-relaxed text-muted">
-                <p>
-                  Argenta had ambitieuze digitale doelen, maar de cijfers zaten
-                  verspreid over teams en systemen. Er was geen gedeeld beeld van waar
-                  het bedrijf écht stond — en dus ook geen gedragen plan om vooruit te
-                  gaan.
-                </p>
-                <p>
-                  Elke afdeling werkte met een eigen dashboard, een eigen definitie van
-                  succes en een eigen prioriteitenlijst. Wat voor de ene ploeg een
-                  doorbraak was, telde voor de andere nauwelijks mee.
-                </p>
-                <p>
-                  Het gevolg: veel overleg, weinig richting. Investeringsbeslissingen
-                  bleven maanden hangen omdat niemand met zekerheid durfde zeggen welke
-                  euro het meeste zou opbrengen.
-                </p>
+          {/* Block B — De aanpak left / image right */}
+          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
+            <Reveal className="md:order-1">
+              <div className="flex flex-col gap-6">
+                <h2 className={subHeading}>De aanpak</h2>
+                <div className={bodyText}>
+                  <p>
+                    We startten met een 2032-Scan: een becijferde nulmeting over business,
+                    technologie, klanten en mensen. Geen aannames, wel data — zodat
+                    iedereen vanaf dag één naar hetzelfde beeld keek.
+                  </p>
+                  <p>
+                    Van daaruit bouwden we samen met het kernteam een kwartaalroadmap met
+                    heldere werven, owners en budgetten. Elke werf kreeg een meetbaar doel
+                    en een verantwoordelijke die er ’s ochtends wakker van lag.
+                  </p>
+                </div>
               </div>
             </Reveal>
-
-            <Reveal>
-              <h2 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink">
-                De aanpak
-              </h2>
-              <div className="mt-6 flex flex-col gap-5 font-display text-xl leading-relaxed text-muted">
-                <p>
-                  We startten met een 2032-Scan: een becijferde nulmeting over business,
-                  technologie, klanten en mensen. Geen aannames, wel data — zodat
-                  iedereen vanaf dag één naar hetzelfde beeld keek.
-                </p>
-                <p>
-                  Van daaruit bouwden we samen met het kernteam een kwartaalroadmap met
-                  heldere werven, owners en budgetten. Elke werf kreeg een meetbaar doel
-                  en een verantwoordelijke die er ’s ochtends wakker van lag.
-                </p>
-                <p>
-                  We toetsten elke aanname bij echte klanten en medewerkers voor er een
-                  euro naar een leverancier ging. Wat niet standhield, sneuvelde vroeg —
-                  bewust en zonder gezichtsverlies.
-                </p>
+            <Reveal delay={0.05} className="md:order-2">
+              <div className="overflow-hidden rounded-[10px] bg-card">
+                <img
+                  src={carouselBoardroom}
+                  alt=""
+                  className="h-[340px] w-full object-cover md:h-[520px]"
+                />
               </div>
             </Reveal>
+          </div>
 
+          {/* Block C — two images left / De uitvoering right + quote */}
+          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
             <Reveal>
-              <h2 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink">
-                De uitvoering
-              </h2>
-              <div className="mt-6 flex flex-col gap-5 font-display text-xl leading-relaxed text-muted">
-                <p>
-                  De roadmap werd geen document dat in een la verdween, maar een levend
-                  ritme: elk kwartaal meten, bijsturen en opnieuw prioriteren op basis
-                  van de cijfers.
-                </p>
-                <p>
-                  Waar interne capaciteit ontbrak, haakten we gericht mensen aan — nooit
-                  meer dan nodig, altijd met kennisoverdracht naar het eigen team, zodat
-                  Argenta het na afloop zelf kan dragen.
-                </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="overflow-hidden rounded-[10px] bg-card">
+                  <img
+                    src={carouselStrategy}
+                    alt=""
+                    className="h-[340px] w-full object-cover md:h-[520px]"
+                  />
+                </div>
+                <div className="overflow-hidden rounded-[10px] bg-card">
+                  <img
+                    src={panel}
+                    alt=""
+                    className="h-[340px] w-full object-cover md:h-[520px]"
+                  />
+                </div>
               </div>
             </Reveal>
-
-            {/* Inline pull-quote with amber accent mark */}
-            <Reveal>
-              <div className="flex gap-6">
-                <QuoteMark className="mt-1 h-9 w-8 shrink-0 text-amber" />
-                <p className="font-display text-xl italic leading-relaxed text-muted">
-                  {PULL_QUOTE}
-                </p>
+            <Reveal delay={0.05}>
+              <div className="flex flex-col gap-6">
+                <h2 className={subHeading}>De uitvoering</h2>
+                <div className={bodyText}>
+                  <p>
+                    De roadmap werd geen document dat in een la verdween, maar een levend
+                    ritme: elk kwartaal meten, bijsturen en opnieuw prioriteren op basis
+                    van de cijfers.
+                  </p>
+                  <p>
+                    Waar interne capaciteit ontbrak, haakten we gericht mensen aan — nooit
+                    meer dan nodig, altijd met kennisoverdracht naar het eigen team, zodat
+                    Argenta het na afloop zelf kan dragen.
+                  </p>
+                </div>
+                <div className="flex gap-5 pt-2">
+                  <QuoteMark className="mt-1 h-8 w-7 shrink-0 text-amber" />
+                  <p className="font-display text-xl italic leading-relaxed text-muted">
+                    {PULL_QUOTE}
+                  </p>
+                </div>
               </div>
             </Reveal>
+          </div>
 
-            {/* Deliverables */}
-            <Reveal>
-              <h2 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink">
+          {/* Deliverables — distinct framed block with checklist */}
+          <Reveal>
+            <div className="rounded-2xl border border-[rgba(90,98,113,0.25)] bg-card px-8 py-10 md:px-12 md:py-12">
+              <h2 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink md:text-[2rem]">
                 Wat we opleverden
               </h2>
-              <ul className="mt-6 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+              <ul className="mt-8 grid grid-cols-1 gap-x-12 gap-y-1 sm:grid-cols-2">
                 {DELIVERABLES.map((item) => (
-                  <li key={item} className="flex items-center gap-3">
-                    <CheckCircle className="size-[18px] shrink-0 text-amber" />
+                  <li
+                    key={item}
+                    className="flex items-center gap-3 border-t border-[rgba(90,98,113,0.2)] py-4"
+                  >
+                    <CheckCircle className="size-5 shrink-0 text-amber" />
                     <span className="font-display text-lg text-ink">{item}</span>
                   </li>
                 ))}
               </ul>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* 3 — Het resultaat + carousel (dark) */}
       <section className="bg-ink-900 py-20 md:py-30">
         <div className="mx-auto max-w-[1600px] px-6 md:px-16">
-          <Reveal>
-            <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.02em] text-white">
-              Het resultaat
-            </h2>
-          </Reveal>
+          <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.02em] text-white">
+            <MaskedText>Het resultaat</MaskedText>
+          </h2>
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={viewport}
             transition={{ staggerChildren: 0.12 }}
-            className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-4"
+            className="mt-14 grid grid-cols-2 gap-x-8 md:grid-cols-4"
           >
-            {RESULTS.map((r, i) => (
+            {RESULTS.map((r) => (
               <motion.div
                 key={r.label}
                 variants={{
                   hidden: { opacity: 0, y: 24 },
                   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
                 }}
-                className={`flex flex-col gap-3 ${
-                  i < 3 ? 'md:border-r md:border-white/15 md:pr-8' : ''
-                }`}
+                className="flex flex-col items-center gap-3 border-b border-[#44403c] py-6 text-center"
               >
                 <span className="font-display text-[clamp(2.5rem,4vw,3rem)] font-medium leading-none tracking-[-0.04em] text-white">
                   <CountUp to={r.value} suffix={r.suffix} />
@@ -307,7 +335,6 @@ export default function CaseArgenta() {
           </motion.div>
         </div>
 
-        {/* Endless fluted-glass carousel — centered, others frosted */}
         <Reveal className="mt-16 md:mt-24">
           <FlutedCarousel
             images={[
@@ -323,16 +350,13 @@ export default function CaseArgenta() {
       {/* 4 — Client quote (light): image left + quote right */}
       <section className="bg-white py-20 md:py-30">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-10 px-6 md:px-16 lg:flex-row lg:items-stretch lg:gap-16">
-          {/* Image with a reeded-glass edge */}
           <Reveal className="lg:w-[399px] lg:shrink-0">
             <div className="relative h-[300px] overflow-hidden rounded-[10px] md:h-[420px] lg:h-full">
               <img src={quoteTeam} alt="" className="size-full object-cover" />
-              {/* subtle fluted-glass edge on the right */}
               <div className="pointer-events-none absolute inset-y-0 right-0 w-24 fluted-glass backdrop-blur-[2px]" />
             </div>
           </Reveal>
 
-          {/* Quote */}
           <Reveal className="flex flex-1 flex-col justify-center gap-8">
             <QuoteMark className="h-10 w-9 text-amber" />
             <blockquote className="font-display text-[clamp(1.75rem,3.2vw,2.75rem)] font-medium leading-[1.3] tracking-[-0.02em] text-ink">
