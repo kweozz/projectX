@@ -24,20 +24,23 @@ const item = {
 export default function Hero() {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Live fractal-glass shader background. The WCAG text-safe zone darkens
-          the bottom toward the section brown (#210b03) — guaranteed 4.5:1 vs
-          white type — so the dark comes from the gradient and reads as the
-          sections it flows into. */}
+      {/* Live fractal-glass shader background — golden hour palette with a warm-
+          tint WCAG text-safe zone (guaranteed 4.5:1 vs white type), matching the
+          original video. Settings mirror the shader's own tweak values. */}
       <FractalGlass
         className="absolute inset-0 size-full"
         poster={heroPoster}
+        palette="golden hour"
+        loopSeconds={12}
+        fluteStrength={157}
+        fluteShine={35}
         safeZone="bottom band"
         safeStyle="warm tint"
         safeContrast="4.5:1"
-        safeTint="#210b03"
-        safeSize={0.36}
-        safeDarkness={0.58}
-        safeFeather={0.6}
+        safeSize={0.3}
+        safeDarkness={0.42}
+        safeFeather={0.5}
+        safeRichness={0.4}
       />
       {/* Seamless melt into the section below (Stats, bg-ink-900). */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-ink-900" />
