@@ -1,10 +1,9 @@
-import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Navbar from '../Navbar'
 import MaskedText from '../MaskedText'
+import FractalGlass from '../FractalGlass'
 import { ArrowUpRight } from '../icons'
 import heroPoster from '../../assets/hero/hero-bg.webp'
-import heroVideo from '../../assets/hero/hero-bg.mp4'
 
 const container = {
   hidden: {},
@@ -23,28 +22,10 @@ const item = {
 }
 
 export default function Hero() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    const v = videoRef.current
-    if (!v) return
-    v.muted = true
-    v.play().catch(() => {})
-  }, [])
-
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Background video */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 size-full object-cover"
-        src={heroVideo}
-        poster={heroPoster}
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
+      {/* Live fractal-glass shader background (falls back to the poster) */}
+      <FractalGlass className="absolute inset-0 size-full" poster={heroPoster} />
       {/* Legibility overlay — darker toward bottom-left where the copy sits */}
       <div className="absolute inset-0 bg-gradient-to-tr from-ink/80 via-ink/30 to-transparent" />
 
