@@ -72,6 +72,7 @@ export default function Sectors() {
               <RevealImage
                 src={sector.image}
                 alt={sector.title}
+                parallax={6}
                 className={`rounded-[10px] ${sector.imgHeight}`}
               />
               <div className="flex flex-col gap-2">

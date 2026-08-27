@@ -64,6 +64,7 @@ export default function Partners() {
                 src={partner.image}
                 alt={partner.name}
                 objectPosition={partner.objectPosition}
+                parallax={5}
                 className="h-[420px] w-full rounded-[11px] bg-card lg:h-[483px]"
               />
 

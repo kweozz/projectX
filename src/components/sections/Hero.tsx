@@ -30,7 +30,7 @@ export default function Hero() {
       <FractalGlass
         className="absolute inset-0 size-full"
         poster={heroPoster}
-        palette="warm ember"
+        palette="golden hour"
         loopSeconds={14}
         fluteWidth={34}
         fluteStrength={260}
