@@ -4,21 +4,20 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
 import MaskedText from '../components/MaskedText'
-import ScrollRevealText from '../components/ScrollRevealText'
 import { ArrowRight } from '../components/icons'
 import heroBg from '../assets/hero/hero-bg.mp4'
 import heroPoster from '../assets/hero/hero-bg.webp'
-import scanImg from '../assets/cases/whiteboard.webp'
-import roadmapImg from '../assets/process/report.webp'
-import partnerImg from '../assets/cases/team-walk.webp'
+import scanImg from '../assets/services/scan.webp'
+import roadmapImg from '../assets/services/roadmap.webp'
+import partnerImg from '../assets/services/partner.webp'
 import logoVideo from '../assets/roles/logo-video.mp4'
-// method step images
-import mIntake from '../assets/projects/plaza.webp'
-import mAsis from '../assets/case/stairs.webp'
-import mTobe from '../assets/process/panel.webp'
-import mBlueprint from '../assets/cases/besix.webp'
-import mRoadmap from '../assets/projects/bedrijf-x.webp'
-import mExec from '../assets/process/sunset.webp'
+// method step images (from Figma)
+import mIntake from '../assets/method/intake.webp'
+import mAsis from '../assets/method/asis.webp'
+import mTobe from '../assets/method/tobe.webp'
+import mBlueprint from '../assets/method/blueprint.webp'
+import mRoadmap from '../assets/method/roadmap.webp'
+import mExec from '../assets/method/uitvoering.webp'
 
 const ease = [0.22, 1, 0.36, 1] as const
 const viewport = { once: true, margin: '0px 0px -15% 0px' }
@@ -75,7 +74,7 @@ const SERVICES: Service[] = [
     description:
       'De AS-IS-nulmeting over people, finance en technology — plus hoe klant en medewerker het bedrijf vandaag écht beleven. Geen aannames op afstand, wel data.',
     image: scanImg,
-    objectPosition: '50% 45%',
+    objectPosition: '50% 55%',
     parts: [
       { title: 'Benchmark', text: 'Waar u staat tegenover sectorgenoten.' },
       {
@@ -91,7 +90,7 @@ const SERVICES: Service[] = [
     description:
       'De TO-BE wordt uitgetekend — journeys, processen, rollen — niet enkel een KPI-lijst. Het toekomstige bedrijf wordt getekend op concrete deliverables.',
     image: roadmapImg,
-    objectPosition: '50% 40%',
+    objectPosition: '50% 32%',
     parts: [
       {
         title: 'KPI-boom & benchmark',
@@ -110,7 +109,7 @@ const SERVICES: Service[] = [
     description:
       'Vaste aanwezigheid ter plaatse, kwartaalritme en regie over alle leveranciers. De blueprint leeft mee en wordt elk kwartaal bijgesteld op de realiteit.',
     image: partnerImg,
-    objectPosition: '50% 35%',
+    objectPosition: '50% 45%',
     parts: [
       { title: 'Klankbord', text: 'Bereikbaar wanneer het telt, zonder eigen agenda.' },
       {
@@ -203,18 +202,18 @@ function ServiceCard({
         style={style}
         className="flex h-full items-center bg-ink-900 py-16 lg:py-0"
       >
-        <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,720px)_1fr] lg:gap-[120px] lg:px-0 lg:pr-16">
-          {/* Image — flush to the left edge, rectangular, vertically inset */}
-          <div className="group relative overflow-hidden rounded-[12px] lg:order-1 lg:rounded-none">
+        <div className="grid w-full grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,739px)_1fr] lg:gap-[120px] lg:px-0 lg:pl-0 lg:pr-[max(4rem,calc((100vw-1600px)/2+4rem))]">
+          {/* Image — flush to the left edge, right corners rounded, vertically inset */}
+          <div className="group relative overflow-hidden rounded-[12px] lg:order-1 lg:rounded-l-none lg:rounded-r-[10px]">
             <img
               src={s.image}
               alt=""
               style={{ objectPosition: s.objectPosition }}
-              className="h-72 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] sm:h-96 lg:h-[66vh]"
+              className="h-72 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] sm:h-96 lg:h-[min(640px,72vh)]"
             />
           </div>
           {/* Content */}
-          <div className="flex flex-col gap-6 lg:order-2 lg:max-w-[600px]">
+          <div className="flex flex-col gap-6 lg:order-2 lg:max-w-[560px]">
             <h2 className="font-display text-[clamp(2.25rem,4vw,3rem)] font-semibold leading-[1.02] tracking-[-0.02em] text-white">
               {s.name}
             </h2>
@@ -313,6 +312,13 @@ function MethodSection() {
   const arrowBase =
     'flex size-14 items-center justify-center rounded-full transition-colors duration-200'
 
+  // Cards fade out at the edges instead of hard-clipping. The left edge stays
+  // sharp at rest (matching Figma) and only starts fading once scrolled; the
+  // right fade disappears at the end so the last card is fully clear.
+  const leftStop = atStart ? '#000 0px' : 'transparent 0px, #000 64px'
+  const rightStop = atEnd ? '#000 100%' : '#000 calc(100% - 104px), transparent 100%'
+  const edgeMask = `linear-gradient(to right, ${leftStop}, ${rightStop})`
+
   return (
     <section className="bg-white py-20 md:py-30">
       <div className="mx-auto max-w-[1600px] px-6 md:px-16">
@@ -346,31 +352,44 @@ function MethodSection() {
         {/* Two columns: intro/CTA + carousel */}
         <div className="mt-12 flex flex-col gap-10 md:mt-16 lg:flex-row lg:gap-[120px]">
           <div className="flex shrink-0 flex-col justify-between gap-10 lg:min-h-[480px] lg:w-[449px]">
-            <p className="max-w-[449px] font-display text-xl leading-[1.35] text-muted">
-              Ons traject bestaat uit zes duidelijke stappen die u begeleiden van begin
-              tot eind. We zorgen voor structuur, samenwerking en resultaatgerichte
-              uitvoering, zodat uw project soepel en succesvol verloopt.
-            </p>
-            <Link to="/contact" className={ctaOnLight}>
-              Plan een gesprek
-              <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </Link>
+            <Reveal>
+              <p className="max-w-[449px] font-display text-xl leading-[1.35] text-muted">
+                Ons traject bestaat uit zes duidelijke stappen die u begeleiden van
+                begin tot eind. We zorgen voor structuur, samenwerking en
+                resultaatgerichte uitvoering, zodat uw project soepel en succesvol
+                verloopt.
+              </p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <Link to="/contact" className={ctaOnLight}>
+                Plan een gesprek
+                <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </Link>
+            </Reveal>
           </div>
 
-          <div
+          <motion.div
             ref={trackRef}
-            className="no-scrollbar -mr-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pr-6 md:-mr-16 md:pr-16 lg:min-w-0 lg:flex-1"
-            style={{ scrollPaddingLeft: '0px' }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '0px 0px -15% 0px' }}
+            transition={{ staggerChildren: 0.1 }}
+            style={{ WebkitMaskImage: edgeMask, maskImage: edgeMask }}
+            className="no-scrollbar -mr-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 pr-6 md:-mr-16 md:pr-16 lg:min-w-0 lg:flex-1"
           >
             {METHOD.map((m) => (
-              <article
+              <motion.article
                 key={m.phase}
-                className="relative flex h-[440px] w-[300px] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-[10px] bg-ink-900 sm:w-[360px] lg:h-[480px] lg:w-[432px]"
+                variants={{
+                  hidden: { opacity: 0, y: 28 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease } },
+                }}
+                className="group relative flex h-[440px] w-[300px] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-[10px] bg-ink-900 sm:w-[360px] lg:h-[480px] lg:w-[432px]"
               >
                 <img
                   src={m.image}
                   alt=""
-                  className="absolute inset-0 size-full object-cover"
+                  className="absolute inset-0 size-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
                 />
                 <div className="relative flex flex-col gap-2 bg-card p-6">
                   <div className="flex items-center justify-between gap-3">
@@ -385,9 +404,9 @@ function MethodSection() {
                     {m.text}
                   </p>
                 </div>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -426,16 +445,6 @@ export default function Diensten() {
           </motion.p>
         </div>
       </header>
-
-      {/* Positioning — the third model (cream), two-tone reveal */}
-      <section className="bg-card py-24 md:py-32">
-        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
-          <ScrollRevealText
-            text="De adviseur becijfert zonder te tekenen. De aannemer bouwt zonder plan. Het designbureau tekent zonder cijfers. Wij verbinden alle drie — en blijven tot de roadmap is uitgevoerd."
-            className="max-w-[24ch] font-display text-[clamp(2rem,4.4vw,3.75rem)] font-semibold leading-[1.12] tracking-[-0.025em]"
-          />
-        </div>
-      </section>
 
       {/* Services — dark sticky-stacking cards (avexa /works style) */}
       <section className="bg-ink-900">
