@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
-import { ArrowRight } from '../components/icons'
 import CaseMedia from '../components/CaseMedia'
 import MaskedText from '../components/MaskedText'
 import heroBg from '../assets/hero/hero-bg.mp4'
@@ -161,15 +160,6 @@ export default function Cases() {
                 {featured && (
                   <div key={`f-${featured.name}-${active}`}>
                     <CaseCard c={featured} featured />
-                    <div className="mt-6 flex items-center">
-                      <Link
-                        to={featured.to}
-                        className="group inline-flex items-center gap-2 border-b border-ink pb-1 font-display text-base font-medium uppercase tracking-tight text-ink"
-                      >
-                        Bekijk project
-                        <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                      </Link>
-                    </div>
                   </div>
                 )}
                 {rest.length > 0 && (
