@@ -9,8 +9,12 @@ import MaskedText from '../components/MaskedText'
 import { ArrowRight, CheckCircle, QuoteMark } from '../components/icons'
 import argenta from '../assets/projects/argenta.webp'
 import panel from '../assets/process/panel.webp'
-import stairs from '../assets/case/stairs.webp'
 import quoteTeam from '../assets/case/quote-team.webp'
+// Alternating story blocks (from Figma 730-434)
+import challengeImg from '../assets/case/challenge.webp'
+import approachImg from '../assets/case/approach.webp'
+import exec1Img from '../assets/case/exec-1.webp'
+import exec2Img from '../assets/case/exec-2.webp'
 // Carousel + block photos — replace with the real case photos (same names).
 import carouselWorkshop from '../assets/case/carousel-1-workshop.webp'
 import carouselBoardroom from '../assets/case/carousel-2-boardroom.webp'
@@ -82,9 +86,10 @@ function Reveal({
 }
 
 const bodyText =
-  'flex flex-col gap-5 font-display text-lg leading-relaxed text-muted md:text-xl'
+  'flex flex-col gap-5 font-display text-lg leading-[1.6] text-muted md:text-xl'
+// Big story-block heading (Figma: 48px semibold)
 const subHeading =
-  'font-display text-2xl font-medium tracking-[-0.02em] text-ink md:text-[2rem]'
+  'font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-ink'
 
 export default function CaseArgenta() {
   return (
@@ -166,28 +171,22 @@ export default function CaseArgenta() {
         </div>
       </header>
 
-      {/* 2 — Het verhaal: intro + alternating image/text blocks (light) */}
+      {/* 2 — Het verhaal: intro + big alternating image/text blocks (light) */}
       <section className="bg-white pb-20 pt-16 md:pb-30 md:pt-24">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-20 px-6 md:gap-28 md:px-16">
-          {/* Intro statement — scroll-linked colour reveal */}
+        {/* Intro statement — contained */}
+        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
           <ScrollRevealText
             text={`${STORY_LEAD_STRONG} ${STORY_LEAD_SOFT}`}
-            className="font-display text-[clamp(1.6rem,3vw,2.25rem)] font-semibold leading-[1.4] tracking-[-0.01em]"
+            className="font-display text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[1.55] tracking-[-0.015em]"
           />
+        </div>
 
-          {/* Block A — image left / De uitdaging right */}
-          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
-            <Reveal>
-              <div className="overflow-hidden rounded-[10px] bg-card">
-                <img
-                  src={stairs}
-                  alt=""
-                  className="h-[340px] w-full object-cover md:h-[520px]"
-                />
-              </div>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <div className="flex flex-col gap-6">
+        {/* Alternating full-bleed blocks (images bleed to the viewport edge) */}
+        <div className="mt-20 flex flex-col gap-24 md:mt-28 md:gap-[120px]">
+          {/* Block A — De uitdaging (text left) / image right */}
+          <Reveal>
+            <div className="grid grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[1fr_minmax(0,724px)] lg:gap-[120px] lg:px-0 lg:pr-0 lg:pl-[max(4rem,calc((100vw-1600px)/2+4rem))]">
+              <div className="flex flex-col gap-8 lg:order-1">
                 <h2 className={subHeading}>De uitdaging</h2>
                 <div className={bodyText}>
                   <p>
@@ -202,13 +201,27 @@ export default function CaseArgenta() {
                   </p>
                 </div>
               </div>
-            </Reveal>
-          </div>
+              <div className="overflow-hidden rounded-[10px] lg:order-2 lg:rounded-r-none lg:rounded-l-[10px]">
+                <img
+                  src={challengeImg}
+                  alt=""
+                  className="h-[320px] w-full object-cover sm:h-[440px] lg:h-[600px]"
+                />
+              </div>
+            </div>
+          </Reveal>
 
-          {/* Block B — De aanpak left / image right */}
-          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
-            <Reveal className="md:order-1">
-              <div className="flex flex-col gap-6">
+          {/* Block B — image left / De aanpak (text right) */}
+          <Reveal>
+            <div className="grid grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,796px)_1fr] lg:gap-[120px] lg:px-0 lg:pl-0 lg:pr-[max(4rem,calc((100vw-1600px)/2+4rem))]">
+              <div className="overflow-hidden rounded-[10px] lg:order-1 lg:rounded-l-none lg:rounded-r-[10px]">
+                <img
+                  src={approachImg}
+                  alt=""
+                  className="h-[320px] w-full object-cover sm:h-[440px] lg:h-[600px]"
+                />
+              </div>
+              <div className="flex flex-col gap-8 lg:order-2">
                 <h2 className={subHeading}>De aanpak</h2>
                 <div className={bodyText}>
                   <p>
@@ -223,40 +236,13 @@ export default function CaseArgenta() {
                   </p>
                 </div>
               </div>
-            </Reveal>
-            <Reveal delay={0.05} className="md:order-2">
-              <div className="overflow-hidden rounded-[10px] bg-card">
-                <img
-                  src={carouselBoardroom}
-                  alt=""
-                  className="h-[340px] w-full object-cover md:h-[520px]"
-                />
-              </div>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
 
-          {/* Block C — two images left / De uitvoering right + quote */}
-          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
-            <Reveal>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="overflow-hidden rounded-[10px] bg-card">
-                  <img
-                    src={carouselStrategy}
-                    alt=""
-                    className="h-[340px] w-full object-cover md:h-[520px]"
-                  />
-                </div>
-                <div className="overflow-hidden rounded-[10px] bg-card">
-                  <img
-                    src={panel}
-                    alt=""
-                    className="h-[340px] w-full object-cover md:h-[520px]"
-                  />
-                </div>
-              </div>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <div className="flex flex-col gap-6">
+          {/* Block C — De uitvoering (text left) + quote / two images right */}
+          <Reveal>
+            <div className="grid grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,526px)_1fr] lg:gap-[120px] lg:px-0 lg:pr-0 lg:pl-[max(4rem,calc((100vw-1600px)/2+4rem))]">
+              <div className="flex flex-col gap-8 lg:order-1">
                 <h2 className={subHeading}>De uitvoering</h2>
                 <div className={bodyText}>
                   <p>
@@ -270,17 +256,35 @@ export default function CaseArgenta() {
                     Argenta het na afloop zelf kan dragen.
                   </p>
                 </div>
-                <div className="flex gap-5 pt-2">
-                  <QuoteMark className="mt-1 h-8 w-7 shrink-0 text-amber" />
-                  <p className="font-display text-xl italic leading-relaxed text-muted">
+                <div className="flex items-center gap-6 py-2">
+                  <QuoteMark className="h-10 w-9 shrink-0 text-amber" />
+                  <p className="font-display text-2xl italic leading-[1.6] text-muted">
                     {PULL_QUOTE}
                   </p>
                 </div>
               </div>
-            </Reveal>
-          </div>
+              <div className="grid grid-cols-2 gap-4 lg:order-2 lg:h-[600px] lg:gap-4">
+                <div className="h-full overflow-hidden rounded-[10px]">
+                  <img
+                    src={exec1Img}
+                    alt=""
+                    className="h-[320px] w-full object-cover sm:h-[440px] lg:h-full"
+                  />
+                </div>
+                <div className="h-full overflow-hidden rounded-[10px] lg:rounded-r-none lg:rounded-l-[10px]">
+                  <img
+                    src={exec2Img}
+                    alt=""
+                    className="h-[320px] w-full object-cover sm:h-[440px] lg:h-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
 
-          {/* Deliverables — distinct framed block with checklist */}
+        {/* Deliverables — distinct framed block with checklist (contained) */}
+        <div className="mx-auto mt-24 max-w-[1600px] px-6 md:mt-28 md:px-16">
           <Reveal>
             <div className="rounded-2xl border border-[rgba(90,98,113,0.25)] bg-card px-8 py-10 md:px-12 md:py-12">
               <h2 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink md:text-[2rem]">
