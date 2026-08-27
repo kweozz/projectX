@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
@@ -10,7 +10,14 @@ import heroBg from '../assets/hero/hero-bg.mp4'
 import heroPoster from '../assets/hero/hero-bg.webp'
 import scanImg from '../assets/cases/whiteboard.webp'
 import roadmapImg from '../assets/process/report.webp'
-import partnerImg from '../assets/cases/corridor.webp'
+import partnerImg from '../assets/cases/team-walk.webp'
+// method step images
+import mIntake from '../assets/projects/plaza.webp'
+import mAsis from '../assets/case/stairs.webp'
+import mTobe from '../assets/process/panel.webp'
+import mBlueprint from '../assets/cases/besix.webp'
+import mRoadmap from '../assets/projects/bedrijf-x.webp'
+import mExec from '../assets/process/sunset.webp'
 
 const ease = [0.22, 1, 0.36, 1] as const
 const viewport = { once: true, margin: '0px 0px -15% 0px' }
@@ -93,7 +100,7 @@ const SERVICES: Service[] = [
     description:
       'Vaste aanwezigheid ter plaatse, kwartaalritme en regie over alle leveranciers. De blueprint leeft mee en wordt elk kwartaal bijgesteld op de realiteit.',
     image: partnerImg,
-    objectPosition: '50% 50%',
+    objectPosition: '50% 35%',
     parts: [
       { title: 'Klankbord', text: 'Bereikbaar wanneer het telt, zonder eigen agenda.' },
       {
@@ -124,12 +131,12 @@ const ROLES = [
 ]
 
 const METHOD = [
-  { phase: 'Intake', when: '±1 week', text: 'Sponsorship van eigenaar of directie. Zonder sponsor starten we niet.' },
-  { phase: 'AS-IS', when: 'week 1–4', text: 'Maturiteitsfoto per domein + benchmark tegen sectorgenoten.' },
-  { phase: 'TO-BE 2032', when: 'week 4–8', text: 'Ambitieworkshop naar een KPI-boom: doelen getoetst, niet enkel afgesproken.' },
-  { phase: 'Blueprint', when: 'week 8–12', text: 'De TO-BE uitgetekend: journeys, processen, rollen — getoetst bij klant en medewerker.' },
-  { phase: 'Roadmap', when: 'week 12–16', text: 'De blueprint verkaveld in werven, elk met owner, budget en businesscase.' },
-  { phase: 'Uitvoering', when: 'doorlopend', text: 'Kwartaalritme: KPI-review, change en leveranciersregie.' },
+  { phase: 'Intake', when: '±1 week', text: 'Sponsorship van eigenaar of directie. Zonder sponsor starten we niet.', image: mIntake },
+  { phase: 'AS-IS', when: 'week 1–4', text: 'Maturiteitsfoto per domein + benchmark tegen sectorgenoten.', image: mAsis },
+  { phase: 'TO-BE 2032', when: 'week 4–8', text: 'Ambitieworkshop naar een KPI-boom: doelen getoetst, niet enkel afgesproken.', image: mTobe },
+  { phase: 'Blueprint', when: 'week 8–12', text: 'De TO-BE uitgetekend: journeys, processen, rollen — getoetst bij klant en medewerker.', image: mBlueprint },
+  { phase: 'Roadmap', when: 'week 12–16', text: 'De blueprint verkaveld in werven, elk met owner, budget en businesscase.', image: mRoadmap },
+  { phase: 'Uitvoering', when: 'doorlopend', text: 'Kwartaalritme: KPI-review, change en leveranciersregie.', image: mExec },
 ]
 
 const NOT_DOING = [
@@ -139,58 +146,56 @@ const NOT_DOING = [
   'Commissies van leveranciers',
 ]
 
-function ServiceBlock({ s, index }: { s: Service; index: number }) {
-  const flipped = index % 2 === 1
+function ServiceStackCard({ s }: { s: Service }) {
   return (
-    <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-      <Reveal className={flipped ? 'lg:order-2' : 'lg:order-1'}>
-        <div className="group overflow-hidden rounded-[10px] bg-card">
-          <img
-            src={s.image}
-            alt=""
-            style={{ objectPosition: s.objectPosition }}
-            className="h-[380px] w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] md:h-[560px]"
-          />
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.08} className={flipped ? 'lg:order-1' : 'lg:order-2'}>
-        <div className="flex flex-col gap-6">
-          <p className="font-display text-sm uppercase tracking-[0.08em] text-amber">
-            {s.meta}
-          </p>
-          <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
-            {s.name}
-          </h2>
-          <p className="font-display text-xl font-medium tracking-[-0.01em] text-ink md:text-2xl">
-            {s.promise}
-          </p>
-          <p className="max-w-[52ch] font-display text-lg leading-relaxed text-muted">
-            {s.description}
-          </p>
-
-          <div className="mt-2 flex flex-col border-t border-[rgba(90,98,113,0.2)]">
-            {s.parts.map((p) => (
-              <div
-                key={p.title}
-                className="flex flex-col gap-1 border-b border-[rgba(90,98,113,0.2)] py-4"
-              >
-                <h3 className="font-display text-base font-medium tracking-[-0.01em] text-ink">
-                  {p.title}
-                </h3>
-                <p className="font-display text-base leading-relaxed text-muted">
-                  {p.text}
-                </p>
+    <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center">
+      <div className="mx-auto w-full max-w-[1600px] px-6 md:px-16">
+        <div className="group overflow-hidden rounded-[24px] bg-card shadow-[0_-12px_50px_-12px_rgba(21,5,0,0.25)] lg:h-[84vh]">
+          <div className="grid h-full grid-cols-1 lg:grid-cols-2">
+            <div className="relative overflow-hidden">
+              <img
+                src={s.image}
+                alt=""
+                style={{ objectPosition: s.objectPosition }}
+                className="h-64 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05] sm:h-80 lg:h-full"
+              />
+            </div>
+            <div className="flex flex-col justify-center gap-5 p-8 md:p-12 lg:p-14">
+              <p className="font-display text-sm uppercase tracking-[0.08em] text-amber">
+                {s.meta}
+              </p>
+              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
+                {s.name}
+              </h2>
+              <p className="font-display text-xl font-medium tracking-[-0.01em] text-ink md:text-2xl">
+                {s.promise}
+              </p>
+              <p className="max-w-[48ch] font-display text-base leading-relaxed text-muted md:text-lg">
+                {s.description}
+              </p>
+              <div className="flex flex-col border-t border-[rgba(90,98,113,0.2)]">
+                {s.parts.map((p) => (
+                  <div
+                    key={p.title}
+                    className="flex flex-col gap-1 border-b border-[rgba(90,98,113,0.2)] py-3.5"
+                  >
+                    <h3 className="font-display text-base font-medium tracking-[-0.01em] text-ink">
+                      {p.title}
+                    </h3>
+                    <p className="font-display text-base leading-relaxed text-muted">
+                      {p.text}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
+              <Link to="/contact" className={ctaLight}>
+                Plan een gesprek
+                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </div>
-
-          <Link to="/contact" className={ctaLight}>
-            Plan een gesprek
-            <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-          </Link>
         </div>
-      </Reveal>
+      </div>
     </div>
   )
 }
@@ -238,13 +243,68 @@ export default function Diensten() {
         </div>
       </section>
 
-      {/* Services — editorial feature blocks */}
-      <section className="bg-white py-20 md:py-28">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-24 px-6 md:gap-32 md:px-16">
-          {SERVICES.map((s, i) => (
-            <ServiceBlock key={s.name} s={s} index={i} />
+      {/* Services — sticky-stacking cards (avexa /works style) */}
+      <section className="bg-white pt-20 md:pt-28">
+        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
+          <Reveal>
+            <p className="font-display text-sm uppercase tracking-[0.12em] text-amber">
+              Aanbod
+            </p>
+            <h2 className="mt-4 max-w-[20ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-ink">
+              Drie lagen die op elkaar voortbouwen.
+            </h2>
+          </Reveal>
+        </div>
+        <div className="relative mt-12 pb-20 md:pb-28">
+          {SERVICES.map((s) => (
+            <ServiceStackCard key={s.name} s={s} />
           ))}
         </div>
+      </section>
+
+      {/* Method — horizontal step timeline with images + arrows */}
+      <section className="bg-card py-20 md:py-30">
+        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
+          <Reveal>
+            <h2 className="max-w-[24ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-ink">
+              Zo verloopt een traject
+            </h2>
+          </Reveal>
+        </div>
+        <Reveal className="mt-14">
+          <div
+            className="no-scrollbar flex gap-4 overflow-x-auto px-6 md:px-16"
+            style={{ scrollPaddingLeft: 'var(--page-gutter)' }}
+          >
+            {METHOD.map((m, i) => (
+              <Fragment key={m.phase}>
+                <div className="flex w-[280px] shrink-0 flex-col overflow-hidden rounded-[14px] border border-[rgba(90,98,113,0.2)] bg-white">
+                  <div className="h-40 overflow-hidden">
+                    <img src={m.image} alt="" className="size-full object-cover" />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-2 p-5">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <h3 className="font-display text-lg font-medium tracking-[-0.01em] text-ink">
+                        {m.phase}
+                      </h3>
+                      <span className="font-display text-xs uppercase tracking-[0.06em] text-amber">
+                        {m.when}
+                      </span>
+                    </div>
+                    <p className="font-display text-sm leading-relaxed text-muted">
+                      {m.text}
+                    </p>
+                  </div>
+                </div>
+                {i < METHOD.length - 1 && (
+                  <div className="flex shrink-0 items-center">
+                    <ArrowRight className="size-5 text-amber/70" />
+                  </div>
+                )}
+              </Fragment>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       {/* The four roles (dark) */}
@@ -264,36 +324,6 @@ export default function Diensten() {
                   </h3>
                   <p className="max-w-[46ch] font-display text-lg leading-relaxed text-white/70">
                     {r.text}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Method (cream) */}
-      <section className="bg-card py-20 md:py-30">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-16 px-6 md:px-16">
-          <Reveal>
-            <h2 className="max-w-[24ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-ink">
-              Zo verloopt een traject
-            </h2>
-          </Reveal>
-          <div className="grid grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {METHOD.map((m, i) => (
-              <Reveal key={m.phase} delay={(i % 3) * 0.06}>
-                <div className="flex flex-col gap-2 border-t border-[rgba(90,98,113,0.25)] pt-5">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <h3 className="font-display text-xl font-medium tracking-[-0.01em] text-ink">
-                      {m.phase}
-                    </h3>
-                    <span className="font-display text-sm uppercase tracking-[0.06em] text-amber">
-                      {m.when}
-                    </span>
-                  </div>
-                  <p className="font-display text-base leading-relaxed text-muted">
-                    {m.text}
                   </p>
                 </div>
               </Reveal>
