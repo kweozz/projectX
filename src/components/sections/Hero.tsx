@@ -45,6 +45,9 @@ export default function Hero() {
         safeFeather={0.5}
         safeRichness={0.4}
       />
+      {/* Match the section colour exactly at the seam. The bottom is already
+          brown here, so this brown->ink-900 blend is invisible (no band). */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
 
       <Navbar />
 
