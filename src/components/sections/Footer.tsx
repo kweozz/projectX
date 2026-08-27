@@ -14,10 +14,10 @@ const LINK_COLUMNS = [
   {
     title: 'Diensten',
     links: [
-      { label: '2032-Scan', href: '/#diensten' },
-      { label: 'Roadmap-traject', href: '/#diensten' },
-      { label: 'Samenwerking', href: '/#diensten' },
-      { label: 'Tarieven', href: '/#diensten' },
+      { label: '2032-Scan', href: '/diensten' },
+      { label: 'Roadmap-traject', href: '/diensten' },
+      { label: 'Samenwerking', href: '/diensten' },
+      { label: 'Tarieven', href: '/diensten' },
     ],
   },
   {

@@ -6,7 +6,7 @@ import logo from '../assets/hero/logo.svg'
 
 const NAV_LINKS = [
   { label: 'Onze aanpak', href: '/#aanpak' },
-  { label: 'Diensten', href: '/#diensten' },
+  { label: 'Diensten', href: '/diensten', route: true },
   { label: 'Projecten', href: '/cases', route: true },
 ]
 

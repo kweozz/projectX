@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import 'lenis/dist/lenis.css'
 import Home from './pages/Home'
+import Diensten from './pages/Diensten'
 import Cases from './pages/Cases'
 import CaseArgenta from './pages/CaseArgenta'
 import Contact from './pages/Contact'
@@ -26,6 +27,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/diensten" element={<Diensten />} />
           <Route path="/cases" element={<Cases />} />
           <Route path="/case/argenta" element={<CaseArgenta />} />
           <Route path="/contact" element={<Contact />} />
