@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
@@ -52,6 +52,10 @@ function Reveal({
 // CTA on a dark background: cream pill, ink label (matches the Figma service cards).
 const ctaOnDark =
   'group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cream px-7 font-display text-sm font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5'
+
+// CTA on a light background: dark (cta) pill, cream label.
+const ctaOnLight =
+  'group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cta px-6 font-display text-base font-medium uppercase text-cream transition-transform duration-200 hover:-translate-y-0.5'
 
 type Service = {
   name: string
@@ -197,31 +201,23 @@ function ServiceCard({
     >
       <motion.div
         style={style}
-        className="flex h-full items-center bg-ink py-16 lg:py-0"
+        className="flex h-full items-center bg-ink-900 py-16 lg:py-0"
       >
-        <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-10 px-6 md:px-16 lg:grid-cols-2 lg:gap-20">
-          {/* Image */}
-          <div className="group relative overflow-hidden rounded-[16px] lg:order-1">
+        <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,720px)_1fr] lg:gap-[120px] lg:px-0 lg:pr-16">
+          {/* Image — flush to the left edge, rectangular, vertically inset */}
+          <div className="group relative overflow-hidden rounded-[12px] lg:order-1 lg:rounded-none">
             <img
               src={s.image}
               alt=""
               style={{ objectPosition: s.objectPosition }}
-              className="h-72 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] sm:h-96 lg:h-[76vh]"
+              className="h-72 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] sm:h-96 lg:h-[66vh]"
             />
           </div>
           {/* Content */}
-          <div className="flex flex-col gap-6 lg:order-2">
-            <p className="font-display text-sm uppercase tracking-[0.08em] text-amber">
-              {s.meta}
-            </p>
-            <div className="flex flex-col gap-3">
-              <h2 className="font-display text-[clamp(2.25rem,4vw,3rem)] font-semibold leading-[1.02] tracking-[-0.02em] text-white">
-                {s.name}
-              </h2>
-              <p className="font-display text-xl font-medium tracking-[-0.01em] text-white md:text-2xl">
-                {s.promise}
-              </p>
-            </div>
+          <div className="flex flex-col gap-6 lg:order-2 lg:max-w-[600px]">
+            <h2 className="font-display text-[clamp(2.25rem,4vw,3rem)] font-semibold leading-[1.02] tracking-[-0.02em] text-white">
+              {s.name}
+            </h2>
             <p className="max-w-[52ch] font-display text-base leading-relaxed text-[#d6d3d1] md:text-lg">
               {s.description}
             </p>
@@ -274,6 +270,130 @@ function ServicesStack() {
   )
 }
 
+// "Zo verloopt een traject" — left column (intro + CTA) beside a horizontal
+// card carousel, navigated with prev/next arrows (same mechanism as the
+// Projecten gallery). Each card is a full-bleed image with a cream footer.
+function MethodSection() {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [atStart, setAtStart] = useState(true)
+  const [atEnd, setAtEnd] = useState(false)
+
+  const updateEdges = () => {
+    const el = trackRef.current
+    if (!el) return
+    setAtStart(el.scrollLeft <= 2)
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2)
+  }
+
+  useEffect(() => {
+    updateEdges()
+    const el = trackRef.current
+    if (!el) return
+    el.addEventListener('scroll', updateEdges, { passive: true })
+    window.addEventListener('resize', updateEdges)
+    return () => {
+      el.removeEventListener('scroll', updateEdges)
+      window.removeEventListener('resize', updateEdges)
+    }
+  }, [])
+
+  const step = (dir: -1 | 1) => {
+    const el = trackRef.current
+    if (!el) return
+    const first = el.children[0] as HTMLElement | undefined
+    const gap = parseFloat(getComputedStyle(el).columnGap || '0')
+    const amount = (first?.offsetWidth ?? 432) + gap
+    el.style.scrollSnapType = 'none'
+    el.scrollBy({ left: dir * amount, behavior: 'smooth' })
+    window.setTimeout(() => {
+      el.style.scrollSnapType = ''
+    }, 500)
+  }
+
+  const arrowBase =
+    'flex size-14 items-center justify-center rounded-full transition-colors duration-200'
+
+  return (
+    <section className="bg-white py-20 md:py-30">
+      <div className="mx-auto max-w-[1600px] px-6 md:px-16">
+        {/* Heading + nav */}
+        <div className="flex items-start justify-between gap-6">
+          <h2 className="max-w-[12ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-ink">
+            <MaskedText>Zo verloopt een traject</MaskedText>
+          </h2>
+          <div className="flex shrink-0 gap-4">
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              disabled={atStart}
+              aria-label="Vorige"
+              className={`${arrowBase} ${atStart ? 'bg-[#e7e5e4] text-ink-900' : 'bg-cta text-cream hover:opacity-90'}`}
+            >
+              <ArrowRight className="size-4 rotate-180" />
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              disabled={atEnd}
+              aria-label="Volgende"
+              className={`${arrowBase} ${atEnd ? 'bg-[#e7e5e4] text-ink-900' : 'bg-cta text-cream hover:opacity-90'}`}
+            >
+              <ArrowRight className="size-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Two columns: intro/CTA + carousel */}
+        <div className="mt-12 flex flex-col gap-10 md:mt-16 lg:flex-row lg:gap-[120px]">
+          <div className="flex shrink-0 flex-col justify-between gap-10 lg:min-h-[480px] lg:w-[449px]">
+            <p className="max-w-[449px] font-display text-xl leading-[1.35] text-muted">
+              Ons traject bestaat uit zes duidelijke stappen die u begeleiden van begin
+              tot eind. We zorgen voor structuur, samenwerking en resultaatgerichte
+              uitvoering, zodat uw project soepel en succesvol verloopt.
+            </p>
+            <Link to="/contact" className={ctaOnLight}>
+              Plan een gesprek
+              <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          <div
+            ref={trackRef}
+            className="no-scrollbar -mr-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pr-6 md:-mr-16 md:pr-16 lg:min-w-0 lg:flex-1"
+            style={{ scrollPaddingLeft: '0px' }}
+          >
+            {METHOD.map((m) => (
+              <article
+                key={m.phase}
+                className="relative flex h-[440px] w-[300px] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-[10px] bg-ink-900 sm:w-[360px] lg:h-[480px] lg:w-[432px]"
+              >
+                <img
+                  src={m.image}
+                  alt=""
+                  className="absolute inset-0 size-full object-cover"
+                />
+                <div className="relative flex flex-col gap-2 bg-card p-6">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="font-display text-xl font-medium uppercase leading-[1.4] tracking-[-0.03em] text-ink-900">
+                      {m.phase}
+                    </h3>
+                    <span className="shrink-0 rounded-full border border-ink-900 px-3.5 py-1.5 font-display text-sm font-medium uppercase leading-none tracking-tight text-ink-900 backdrop-blur-[2.5px]">
+                      {m.when}
+                    </span>
+                  </div>
+                  <p className="font-display text-base leading-[1.35] text-muted">
+                    {m.text}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function Diensten() {
   return (
     <div className="bg-white">
@@ -318,64 +438,12 @@ export default function Diensten() {
       </section>
 
       {/* Services — dark sticky-stacking cards (avexa /works style) */}
-      <section className="bg-ink">
-        <div className="mx-auto max-w-[1600px] px-6 pb-6 pt-20 md:px-16 md:pt-28">
-          <Reveal>
-            <p className="font-display text-sm uppercase tracking-[0.12em] text-amber">
-              Aanbod
-            </p>
-            <h2 className="mt-4 max-w-[20ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-white">
-              Drie lagen die op elkaar voortbouwen.
-            </h2>
-          </Reveal>
-        </div>
+      <section className="bg-ink-900">
         <ServicesStack />
       </section>
 
-      {/* Method — horizontal step timeline with images + arrows */}
-      <section className="bg-card py-20 md:py-30">
-        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
-          <Reveal>
-            <h2 className="max-w-[24ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-ink">
-              Zo verloopt een traject
-            </h2>
-          </Reveal>
-        </div>
-        <Reveal className="mt-14">
-          <div
-            className="no-scrollbar flex gap-4 overflow-x-auto px-6 md:px-16"
-            style={{ scrollPaddingLeft: 'var(--page-gutter)' }}
-          >
-            {METHOD.map((m, i) => (
-              <Fragment key={m.phase}>
-                <div className="flex w-[280px] shrink-0 flex-col overflow-hidden rounded-[14px] border border-[rgba(90,98,113,0.2)] bg-white">
-                  <div className="h-40 overflow-hidden">
-                    <img src={m.image} alt="" className="size-full object-cover" />
-                  </div>
-                  <div className="flex flex-1 flex-col gap-2 p-5">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <h3 className="font-display text-lg font-medium tracking-[-0.01em] text-ink">
-                        {m.phase}
-                      </h3>
-                      <span className="font-display text-xs uppercase tracking-[0.06em] text-amber">
-                        {m.when}
-                      </span>
-                    </div>
-                    <p className="font-display text-sm leading-relaxed text-muted">
-                      {m.text}
-                    </p>
-                  </div>
-                </div>
-                {i < METHOD.length - 1 && (
-                  <div className="flex shrink-0 items-center">
-                    <ArrowRight className="size-5 text-amber/70" />
-                  </div>
-                )}
-              </Fragment>
-            ))}
-          </div>
-        </Reveal>
-      </section>
+      {/* Method — "Zo verloopt een traject" carousel */}
+      <MethodSection />
 
       {/* The four roles (dark) — Lumen mark plays a video inside its silhouette */}
       <section className="bg-ink-900 py-20 md:py-30">
