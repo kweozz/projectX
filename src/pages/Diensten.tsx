@@ -1,5 +1,5 @@
-import { Fragment, type ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
@@ -11,6 +11,7 @@ import heroPoster from '../assets/hero/hero-bg.webp'
 import scanImg from '../assets/cases/whiteboard.webp'
 import roadmapImg from '../assets/process/report.webp'
 import partnerImg from '../assets/cases/team-walk.webp'
+import logoVideo from '../assets/roles/logo-video.mp4'
 // method step images
 import mIntake from '../assets/projects/plaza.webp'
 import mAsis from '../assets/case/stairs.webp'
@@ -21,6 +22,10 @@ import mExec from '../assets/process/sunset.webp'
 
 const ease = [0.22, 1, 0.36, 1] as const
 const viewport = { once: true, margin: '0px 0px -15% 0px' }
+
+// Lumen mark, used as an alpha mask so a video plays inside the logo silhouette.
+const LOGO_MASK =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Cpath d='M4.30859 17.3086H8.61719V0H26V26H0V0H4.30859V17.3086ZM13 8.68652V25.9951H17.3086V8.68652H13Z' fill='%23000'/%3E%3C/svg%3E\")"
 
 function Reveal({
   children,
@@ -44,8 +49,9 @@ function Reveal({
   )
 }
 
-const ctaLight =
-  'group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cta px-7 font-display text-sm font-medium uppercase text-cream transition-transform duration-200 hover:-translate-y-0.5'
+// CTA on a dark background: cream pill, ink label (matches the Figma service cards).
+const ctaOnDark =
+  'group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cream px-7 font-display text-sm font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5'
 
 type Service = {
   name: string
@@ -146,56 +152,124 @@ const NOT_DOING = [
   'Commissies van leveranciers',
 ]
 
-function ServiceStackCard({ s }: { s: Service }) {
+// Desktop breakpoint gate — the sticky-stack + scroll-scale only run on lg+.
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const update = () => setIsDesktop(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  return isDesktop
+}
+
+// One service. On desktop every card is `sticky top-0` inside a shared tall
+// container, so each new card pins over the previous one. As a card gets
+// covered it scales down and fades (the avexa /works signature), driven by the
+// container's scroll progress. The card has NO box of its own — its background
+// equals the section background, so it reads as one dark canvas, not a panel.
+function ServiceCard({
+  s,
+  index,
+  total,
+  progress,
+}: {
+  s: Service
+  index: number
+  total: number
+  progress: MotionValue<number>
+}) {
+  const isDesktop = useIsDesktop()
+  const isLast = index === total - 1
+  // Covering window: card i recedes while card i+1 rises over it.
+  const start = index / (total - 1)
+  const end = (index + 1) / (total - 1)
+  const scale = useTransform(progress, [start, end], [1, 0.86])
+  const opacity = useTransform(progress, [start, end], [1, 0.4])
+  const style = isDesktop && !isLast ? { scale, opacity } : undefined
+
   return (
-    <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center">
-      <div className="mx-auto w-full max-w-[1600px] px-6 md:px-16">
-        <div className="group overflow-hidden rounded-[24px] bg-card shadow-[0_-12px_50px_-12px_rgba(21,5,0,0.25)] lg:h-[84vh]">
-          <div className="grid h-full grid-cols-1 lg:grid-cols-2">
-            <div className="relative overflow-hidden">
-              <img
-                src={s.image}
-                alt=""
-                style={{ objectPosition: s.objectPosition }}
-                className="h-64 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05] sm:h-80 lg:h-full"
-              />
-            </div>
-            <div className="flex flex-col justify-center gap-5 p-8 md:p-12 lg:p-14">
-              <p className="font-display text-sm uppercase tracking-[0.08em] text-amber">
-                {s.meta}
-              </p>
-              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
+    <div
+      className="relative lg:sticky lg:top-0 lg:h-screen"
+      style={{ zIndex: index + 1 }}
+    >
+      <motion.div
+        style={style}
+        className="flex h-full items-center bg-ink py-16 lg:py-0"
+      >
+        <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-10 px-6 md:px-16 lg:grid-cols-2 lg:gap-20">
+          {/* Image */}
+          <div className="group relative overflow-hidden rounded-[16px] lg:order-1">
+            <img
+              src={s.image}
+              alt=""
+              style={{ objectPosition: s.objectPosition }}
+              className="h-72 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] sm:h-96 lg:h-[76vh]"
+            />
+          </div>
+          {/* Content */}
+          <div className="flex flex-col gap-6 lg:order-2">
+            <p className="font-display text-sm uppercase tracking-[0.08em] text-amber">
+              {s.meta}
+            </p>
+            <div className="flex flex-col gap-3">
+              <h2 className="font-display text-[clamp(2.25rem,4vw,3rem)] font-semibold leading-[1.02] tracking-[-0.02em] text-white">
                 {s.name}
               </h2>
-              <p className="font-display text-xl font-medium tracking-[-0.01em] text-ink md:text-2xl">
+              <p className="font-display text-xl font-medium tracking-[-0.01em] text-white md:text-2xl">
                 {s.promise}
               </p>
-              <p className="max-w-[48ch] font-display text-base leading-relaxed text-muted md:text-lg">
-                {s.description}
-              </p>
-              <div className="flex flex-col border-t border-[rgba(90,98,113,0.2)]">
-                {s.parts.map((p) => (
-                  <div
-                    key={p.title}
-                    className="flex flex-col gap-1 border-b border-[rgba(90,98,113,0.2)] py-3.5"
-                  >
-                    <h3 className="font-display text-base font-medium tracking-[-0.01em] text-ink">
-                      {p.title}
-                    </h3>
-                    <p className="font-display text-base leading-relaxed text-muted">
-                      {p.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <Link to="/contact" className={ctaLight}>
-                Plan een gesprek
-                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </Link>
             </div>
+            <p className="max-w-[52ch] font-display text-base leading-relaxed text-[#d6d3d1] md:text-lg">
+              {s.description}
+            </p>
+            <div className="mt-1 flex flex-col border-t border-[#44403c]">
+              {s.parts.map((p) => (
+                <div
+                  key={p.title}
+                  className="flex flex-col gap-1 border-b border-[#44403c] py-4"
+                >
+                  <h3 className="font-display text-base font-medium tracking-[-0.01em] text-white">
+                    {p.title}
+                  </h3>
+                  <p className="font-display text-base leading-relaxed text-[#d6d3d1]">
+                    {p.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <Link to="/contact" className={`mt-2 ${ctaOnDark}`}>
+              Plan een gesprek
+              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </Link>
           </div>
         </div>
-      </div>
+      </motion.div>
+    </div>
+  )
+}
+
+// Shared scroll context for the stack: one tall container, all cards sticky
+// inside it so later cards pin over earlier ones.
+function ServicesStack() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  })
+  return (
+    <div ref={containerRef} className="relative">
+      {SERVICES.map((s, i) => (
+        <ServiceCard
+          key={s.name}
+          s={s}
+          index={i}
+          total={SERVICES.length}
+          progress={scrollYProgress}
+        />
+      ))}
     </div>
   )
 }
@@ -243,23 +317,19 @@ export default function Diensten() {
         </div>
       </section>
 
-      {/* Services — sticky-stacking cards (avexa /works style) */}
-      <section className="bg-white pt-20 md:pt-28">
-        <div className="mx-auto max-w-[1600px] px-6 md:px-16">
+      {/* Services — dark sticky-stacking cards (avexa /works style) */}
+      <section className="bg-ink">
+        <div className="mx-auto max-w-[1600px] px-6 pb-6 pt-20 md:px-16 md:pt-28">
           <Reveal>
             <p className="font-display text-sm uppercase tracking-[0.12em] text-amber">
               Aanbod
             </p>
-            <h2 className="mt-4 max-w-[20ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-ink">
+            <h2 className="mt-4 max-w-[20ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.07] tracking-[-0.018em] text-white">
               Drie lagen die op elkaar voortbouwen.
             </h2>
           </Reveal>
         </div>
-        <div className="relative mt-12 pb-20 md:pb-28">
-          {SERVICES.map((s) => (
-            <ServiceStackCard key={s.name} s={s} />
-          ))}
-        </div>
+        <ServicesStack />
       </section>
 
       {/* Method — horizontal step timeline with images + arrows */}
@@ -307,7 +377,7 @@ export default function Diensten() {
         </Reveal>
       </section>
 
-      {/* The four roles (dark) */}
+      {/* The four roles (dark) — Lumen mark plays a video inside its silhouette */}
       <section className="bg-ink-900 py-20 md:py-30">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-16 px-6 md:px-16">
           <Reveal>
@@ -315,19 +385,47 @@ export default function Diensten() {
               Vier rollen, één partner
             </h2>
           </Reveal>
-          <div className="grid grid-cols-1 gap-x-16 gap-y-12 md:grid-cols-2">
-            {ROLES.map((r, i) => (
-              <Reveal key={r.title} delay={i * 0.06}>
-                <div className="flex flex-col gap-3 border-t border-white/15 pt-6">
-                  <h3 className="font-display text-2xl font-medium tracking-[-0.02em] text-white">
-                    {r.title}
-                  </h3>
-                  <p className="max-w-[46ch] font-display text-lg leading-relaxed text-white/70">
-                    {r.text}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
+          <div className="flex flex-col items-center gap-16 lg:flex-row lg:items-center lg:gap-24">
+            {/* Video-filled logo */}
+            <Reveal className="flex shrink-0 items-center justify-center">
+              <div
+                className="aspect-square w-[220px] md:w-[300px] lg:w-[340px]"
+                style={{
+                  WebkitMaskImage: LOGO_MASK,
+                  maskImage: LOGO_MASK,
+                  WebkitMaskRepeat: 'no-repeat',
+                  maskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                  maskPosition: 'center',
+                  WebkitMaskSize: 'contain',
+                  maskSize: 'contain',
+                }}
+              >
+                <video
+                  src={logoVideo}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="size-full object-cover"
+                />
+              </div>
+            </Reveal>
+            {/* Roles list */}
+            <div className="flex w-full flex-col">
+              {ROLES.map((r, i) => (
+                <Reveal key={r.title} delay={i * 0.06}>
+                  <div className="flex flex-col gap-3 border-t border-white/15 py-6">
+                    <h3 className="font-display text-2xl font-normal tracking-[-0.02em] text-white">
+                      {r.title}
+                    </h3>
+                    <p className="max-w-[551px] font-display text-lg leading-relaxed text-[#d6d3d1]">
+                      {r.text}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </section>
