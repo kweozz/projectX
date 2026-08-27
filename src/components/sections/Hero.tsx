@@ -36,7 +36,7 @@ export default function Hero() {
         fluteShine={35}
         warpStrength={0.09}
         noiseTravel={0.2}
-        bottomFade={0.85}
+        bottomFade={1}
         safeZone="bottom-left"
         safeStyle="warm tint"
         safeContrast="4.5:1"
@@ -45,8 +45,6 @@ export default function Hero() {
         safeFeather={0.5}
         safeRichness={0.4}
       />
-      {/* Nail the exact seam into the section below (Stats, bg-ink-900). */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink-900" />
 
       <Navbar />
 

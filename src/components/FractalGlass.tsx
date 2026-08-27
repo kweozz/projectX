@@ -144,7 +144,7 @@ void main(){
   // section below while the sides above keep their colour
   if (uBottomFade > 0.001) {
     vec2 fpos = gl_FragCoord.xy / uPixelRatio / uRes;   // 0..1, origin bottom-left
-    float bf = uBottomFade * (1.0 - smoothstep(0.0, 0.5, fpos.y));
+    float bf = uBottomFade * (1.0 - smoothstep(0.0, 0.58, fpos.y));
     color = mix(color, uSafeBase, clamp(bf, 0.0, 1.0));
   }
 
