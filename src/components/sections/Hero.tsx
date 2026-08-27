@@ -36,16 +36,17 @@ export default function Hero() {
         fluteShine={35}
         warpStrength={0.09}
         noiseTravel={0.2}
-        safeZone="bottom band"
+        bottomFade={0.85}
+        safeZone="bottom-left"
         safeStyle="warm tint"
         safeContrast="4.5:1"
-        safeSize={0.3}
+        safeSize={0.5}
         safeDarkness={0.42}
         safeFeather={0.5}
         safeRichness={0.4}
       />
-      {/* Long melt into the section below (Stats, bg-ink-900) so no seam shows. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-ink-900 md:h-80" />
+      {/* Nail the exact seam into the section below (Stats, bg-ink-900). */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink-900" />
 
       <Navbar />
 

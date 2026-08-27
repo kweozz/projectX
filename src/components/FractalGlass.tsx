@@ -72,6 +72,7 @@ uniform vec3 uPalBase, uPal1, uPal2, uPal3, uPal4, uPal5;
 uniform float uSafeMode, uSafeSize, uSafeDark, uSafeFeather, uSafeRatio;
 uniform vec3 uSafeBase, uSafeEmber;
 uniform float uSafeStyle, uSafeRich;
+uniform float uBottomFade;   // 0..1: sink the gradient's own colours to brown at the bottom
 #define TAU 6.28318530718
 
 // WCAG relative luminance needs linearised sRGB, not display values
@@ -137,6 +138,15 @@ void main(){
   vec2 fluted = (rot.x + flutedX) * ax + (rot.y + flutedY) * ay;
   vec3 color = blobs(fluted / 1000.0);
   color = 1.0 - exp(-color * uExposure);
+
+  // bottom fade: let the gradient's own colours sink to the warm brown toward
+  // the bottom (full width, smooth — not a flat band), so it flows into the
+  // section below while the sides above keep their colour
+  if (uBottomFade > 0.001) {
+    vec2 fpos = gl_FragCoord.xy / uPixelRatio / uRes;   // 0..1, origin bottom-left
+    float bf = uBottomFade * (1.0 - smoothstep(0.0, 0.5, fpos.y));
+    color = mix(color, uSafeBase, clamp(bf, 0.0, 1.0));
+  }
 
   // text-safe zone: hold one region dark so light type stays legible
   if (uSafeMode > 0.5) {
@@ -204,6 +214,9 @@ export interface FractalGlassProps {
   noiseTravel?: number
   exposure?: number
   grain?: number
+  /** 0..1: sink the gradient's own colours to the warm brown toward the bottom
+      (smooth, full width) so it flows into the section below. */
+  bottomFade?: number
   // WCAG text-safe zone: hold one region dark so light type stays legible
   safeZone?: SafeZone
   safeStyle?: 'clean dim' | 'warm tint'
@@ -232,6 +245,7 @@ export default function FractalGlass({
   noiseTravel = 0.3,
   exposure = 1.45,
   grain = 0,
+  bottomFade = 0,
   safeZone = 'off',
   safeStyle = 'warm tint',
   safeContrast = '4.5:1',
@@ -245,8 +259,8 @@ export default function FractalGlass({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [failed, setFailed] = useState(false)
   // latest prop values, read inside the animation loop without re-initialising
-  const props = useRef({ palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness, safeTint })
-  props.current = { palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness, safeTint }
+  const props = useRef({ palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness, safeTint, bottomFade })
+  props.current = { palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness, safeTint, bottomFade }
 
   useEffect(() => {
     const cv = canvasRef.current
@@ -286,6 +300,7 @@ export default function FractalGlass({
       sMode: U('uSafeMode'), sSize: U('uSafeSize'), sDark: U('uSafeDark'),
       sFeather: U('uSafeFeather'), sRatio: U('uSafeRatio'),
       sBase: U('uSafeBase'), sEmber: U('uSafeEmber'), sStyle: U('uSafeStyle'), sRich: U('uSafeRich'),
+      bf: U('uBottomFade'),
     }
 
     const onResize = () => {
@@ -313,6 +328,7 @@ export default function FractalGlass({
       gl.uniform1f(u.noise, p.noiseScale)
       gl.uniform1f(u.exp, p.exposure)
       gl.uniform1f(u.grain, p.grain)
+      gl.uniform1f(u.bf, p.bottomFade)
       gl.uniform1f(u.fAngle, p.fluteAngle)
       gl.uniform3fv(u.pBase, P.base); gl.uniform3fv(u.p1, P.c[0]); gl.uniform3fv(u.p2, P.c[1])
       gl.uniform3fv(u.p3, P.c[2]); gl.uniform3fv(u.p4, P.c[3]); gl.uniform3fv(u.p5, P.c[4])
