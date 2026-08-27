@@ -35,6 +35,11 @@ const SAFE_MODES: Record<SafeZone, number> = {
 }
 const SAFE_RATIOS: Record<SafeContrast, number> = { off: 0, '3:1': 3, '4.5:1': 4.5, '7:1': 7 }
 
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '')
+  return [parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255]
+}
+
 type Vec3 = [number, number, number]
 type PaletteDef = { base: Vec3; safe: Vec3; ember: Vec3; c: Vec3[] }
 
@@ -207,6 +212,9 @@ export interface FractalGlassProps {
   safeDarkness?: number
   safeFeather?: number
   safeRichness?: number
+  /** Hex the dark zone tints toward (e.g. the section colour it flows into).
+      Overrides the palette's warm safe tone; removes the orange ember lift. */
+  safeTint?: string
   /** Shown when WebGL is unavailable. */
   poster?: string
 }
@@ -231,13 +239,14 @@ export default function FractalGlass({
   safeDarkness = 0.4,
   safeFeather = 0.52,
   safeRichness = 0.5,
+  safeTint,
   poster,
 }: FractalGlassProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [failed, setFailed] = useState(false)
   // latest prop values, read inside the animation loop without re-initialising
-  const props = useRef({ palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness })
-  props.current = { palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness }
+  const props = useRef({ palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness, safeTint })
+  props.current = { palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness, safeTint }
 
   useEffect(() => {
     const cv = canvasRef.current
@@ -314,7 +323,14 @@ export default function FractalGlass({
       gl.uniform1f(u.sRatio, SAFE_RATIOS[p.safeContrast] ?? 0)
       gl.uniform1f(u.sStyle, p.safeStyle === 'warm tint' ? 1 : 0)
       gl.uniform1f(u.sRich, p.safeRichness)
-      gl.uniform3fv(u.sBase, P.safe); gl.uniform3fv(u.sEmber, P.ember)
+      if (p.safeTint) {
+        const t = hexToRgb(p.safeTint)
+        // tint toward a flat colour: base = tint, ember = a hair lifted (no orange)
+        gl.uniform3fv(u.sBase, t)
+        gl.uniform3fv(u.sEmber, [t[0] * 1.1, t[1] * 1.1, t[2] * 1.1])
+      } else {
+        gl.uniform3fv(u.sBase, P.safe); gl.uniform3fv(u.sEmber, P.ember)
+      }
       gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
 

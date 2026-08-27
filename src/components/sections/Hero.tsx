@@ -24,19 +24,23 @@ const item = {
 export default function Hero() {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Live fractal-glass shader background. The WCAG text-safe zone holds the
-          bottom-left dark (where the copy sits) with a guaranteed 4.5:1 contrast
-          against white — so the dark comes from the gradient itself, no overlay. */}
+      {/* Live fractal-glass shader background. The WCAG text-safe zone darkens
+          the bottom toward the section brown (#210b03) — guaranteed 4.5:1 vs
+          white type — so the dark comes from the gradient and reads as the
+          sections it flows into. */}
       <FractalGlass
         className="absolute inset-0 size-full"
         poster={heroPoster}
-        safeZone="bottom-left"
+        safeZone="bottom band"
         safeStyle="warm tint"
         safeContrast="4.5:1"
-        safeSize={0.55}
-        safeDarkness={0.5}
-        safeFeather={0.5}
+        safeTint="#210b03"
+        safeSize={0.36}
+        safeDarkness={0.58}
+        safeFeather={0.6}
       />
+      {/* Seamless melt into the section below (Stats, bg-ink-900). */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-ink-900" />
 
       <Navbar />
 
