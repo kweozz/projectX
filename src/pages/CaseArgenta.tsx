@@ -6,6 +6,7 @@ import CountUp from '../components/CountUp'
 import FlutedCarousel from '../components/FlutedCarousel'
 import ScrollRevealText from '../components/ScrollRevealText'
 import MaskedText from '../components/MaskedText'
+import RevealImage from '../components/RevealImage'
 import { ArrowRight, CheckCircle, QuoteMark } from '../components/icons'
 import argenta from '../assets/projects/argenta.webp'
 import panel from '../assets/process/panel.webp'
@@ -201,26 +202,24 @@ export default function CaseArgenta() {
                   </p>
                 </div>
               </div>
-              <div className="overflow-hidden rounded-[10px] lg:order-2 lg:rounded-r-none lg:rounded-l-[10px]">
-                <img
-                  src={challengeImg}
-                  alt=""
-                  className="h-[320px] w-full object-cover sm:h-[440px] lg:h-[600px]"
-                />
-              </div>
+              <RevealImage
+                src={challengeImg}
+                alt=""
+                parallax={7}
+                className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:order-2 lg:h-[600px] lg:rounded-l-[10px] lg:rounded-r-none"
+              />
             </div>
           </Reveal>
 
           {/* Block B — image left / De aanpak (text right) */}
           <Reveal>
             <div className="grid grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,796px)_1fr] lg:gap-[120px] lg:px-0 lg:pl-0 lg:pr-[max(4rem,calc((100vw-1600px)/2+4rem))]">
-              <div className="overflow-hidden rounded-[10px] lg:order-1 lg:rounded-l-none lg:rounded-r-[10px]">
-                <img
-                  src={approachImg}
-                  alt=""
-                  className="h-[320px] w-full object-cover sm:h-[440px] lg:h-[600px]"
-                />
-              </div>
+              <RevealImage
+                src={approachImg}
+                alt=""
+                parallax={7}
+                className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:order-1 lg:h-[600px] lg:rounded-l-none lg:rounded-r-[10px]"
+              />
               <div className="flex flex-col gap-8 lg:order-2">
                 <h2 className={subHeading}>De aanpak</h2>
                 <div className={bodyText}>
@@ -264,20 +263,18 @@ export default function CaseArgenta() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4 lg:order-2 lg:h-[600px] lg:gap-4">
-                <div className="h-full overflow-hidden rounded-[10px]">
-                  <img
-                    src={exec1Img}
-                    alt=""
-                    className="h-[320px] w-full object-cover sm:h-[440px] lg:h-full"
-                  />
-                </div>
-                <div className="h-full overflow-hidden rounded-[10px] lg:rounded-r-none lg:rounded-l-[10px]">
-                  <img
-                    src={exec2Img}
-                    alt=""
-                    className="h-[320px] w-full object-cover sm:h-[440px] lg:h-full"
-                  />
-                </div>
+                <RevealImage
+                  src={exec1Img}
+                  alt=""
+                  parallax={6}
+                  className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:h-full"
+                />
+                <RevealImage
+                  src={exec2Img}
+                  alt=""
+                  parallax={9}
+                  className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:h-full lg:rounded-l-[10px] lg:rounded-r-none"
+                />
               </div>
             </div>
           </Reveal>

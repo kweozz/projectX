@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight } from '../icons'
 import FractalGlass from '../FractalGlass'
 import logo from '../../assets/hero/logo.svg'
@@ -37,12 +38,20 @@ const SOCIALS = [
 ]
 
 export default function Footer() {
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: ctaRef,
+    offset: ['start end', 'end start'],
+  })
+  // The content block drifts over the continuing shader field (block in block).
+  const contentY = useTransform(scrollYProgress, [0, 1], ['10%', '-10%'])
+
   return (
     <section id="contact">
       {/* CTA — same shader, held dark across the whole frame (warm tint, WCAG
           4.5:1) so the centred type stays crisp and it flows into the ink-900
           section above and the footer below. */}
-      <div className="relative overflow-hidden bg-ink-900">
+      <div ref={ctaRef} className="relative overflow-hidden bg-ink-900">
         <FractalGlass
           className="absolute inset-0 size-full"
           poster={ctaPoster}
@@ -63,12 +72,13 @@ export default function Footer() {
         {/* Melt into the footer below (top stays open to the gradient). */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink-900 to-transparent" />
 
+        <motion.div style={{ y: contentY }} className="relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '0px 0px -20% 0px' }}
           transition={{ duration: 0.8, ease }}
-          className="relative z-10 mx-auto flex max-w-[1600px] flex-col items-center gap-6 px-6 pb-24 pt-32 text-center md:px-16 md:pb-32 md:pt-40"
+          className="mx-auto flex max-w-[1600px] flex-col items-center gap-6 px-6 pb-24 pt-32 text-center md:px-16 md:pb-32 md:pt-40"
         >
           <h2 className="max-w-[800px] font-display text-[clamp(2.25rem,5.5vw,4rem)] font-semibold leading-[1.15] tracking-[-0.023em] text-white">
             Klaar om uw bedrijf te transformeren?
@@ -95,6 +105,7 @@ export default function Footer() {
               <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </a>
           </div>
+        </motion.div>
         </motion.div>
       </div>
 
