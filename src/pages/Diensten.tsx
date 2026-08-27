@@ -456,11 +456,11 @@ export default function Diensten() {
               Vier rollen, één partner
             </h2>
           </Reveal>
-          <div className="flex flex-col items-center gap-16 lg:flex-row lg:items-center lg:gap-24">
+          <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:pl-[120px]">
             {/* Video-filled logo */}
             <Reveal className="flex shrink-0 items-center justify-center">
               <div
-                className="aspect-square w-[220px] md:w-[300px] lg:w-[340px]"
+                className="aspect-square w-[240px] md:w-[320px] lg:w-[367px]"
                 style={{
                   WebkitMaskImage: LOGO_MASK,
                   maskImage: LOGO_MASK,
@@ -482,11 +482,11 @@ export default function Diensten() {
                 />
               </div>
             </Reveal>
-            {/* Roles list */}
-            <div className="flex w-full flex-col">
+            {/* Roles list — fixed-width block on the right (Figma: 624px) */}
+            <div className="flex w-full flex-col lg:w-[624px] lg:shrink-0">
               {ROLES.map((r, i) => (
                 <Reveal key={r.title} delay={i * 0.06}>
-                  <div className="flex flex-col gap-3 border-t border-white/15 py-6">
+                  <div className="flex flex-col gap-3 border-t border-white/15 pt-6 pb-7">
                     <h3 className="font-display text-2xl font-normal tracking-[-0.02em] text-white">
                       {r.title}
                     </h3>
