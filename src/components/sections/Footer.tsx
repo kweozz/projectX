@@ -58,8 +58,7 @@ export default function Footer() {
           safeDarkness={0.5}
           safeRichness={0.4}
         />
-        {/* Melt into the section above and the footer below. */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink-900 to-transparent" />
+        {/* Melt into the footer below (top stays open to the gradient). */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink-900 to-transparent" />
 
         <motion.div
