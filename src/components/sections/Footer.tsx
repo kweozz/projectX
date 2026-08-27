@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from '../icons'
+import FractalGlass from '../FractalGlass'
 import logo from '../../assets/hero/logo.svg'
-import ctaVideo from '../../assets/cta/cta-bg.mp4'
 import ctaPoster from '../../assets/cta/cta-bg.webp'
 import linkedin from '../../assets/cta/linkedin.svg'
 import twitter from '../../assets/cta/twitter.svg'
@@ -38,41 +37,30 @@ const SOCIALS = [
 ]
 
 export default function Footer() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  // Below-the-fold autoplay: browsers pause muted videos that load off-screen
-  // and don't resume them. Play whenever the video scrolls into view.
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) video.play().catch(() => {})
-          else video.pause()
-        }
-      },
-      { threshold: 0.15 },
-    )
-    io.observe(video)
-    return () => io.disconnect()
-  }, [])
-
   return (
     <section id="contact">
-      {/* CTA */}
+      {/* CTA — same shader, held dark across the whole frame (warm tint, WCAG
+          4.5:1) so the centred type stays crisp and it flows into the ink-900
+          section above and the footer below. */}
       <div className="relative overflow-hidden bg-ink-900">
-        <video
-          ref={videoRef}
-          src={ctaVideo}
+        <FractalGlass
+          className="absolute inset-0 size-full"
           poster={ctaPoster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 size-full object-cover"
+          palette="golden hour"
+          loopSeconds={14}
+          fluteStrength={157}
+          fluteShine={35}
+          warpStrength={0.09}
+          noiseTravel={0.2}
+          safeZone="whole frame"
+          safeStyle="warm tint"
+          safeContrast="4.5:1"
+          safeDarkness={0.5}
+          safeRichness={0.4}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink-900/20 via-transparent to-ink-900" />
+        {/* Melt into the section above and the footer below. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink-900 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink-900 to-transparent" />
 
         <motion.div
           initial={{ opacity: 0, y: 28 }}

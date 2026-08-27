@@ -31,9 +31,11 @@ export default function Hero() {
         className="absolute inset-0 size-full"
         poster={heroPoster}
         palette="golden hour"
-        loopSeconds={12}
+        loopSeconds={14}
         fluteStrength={157}
         fluteShine={35}
+        warpStrength={0.09}
+        noiseTravel={0.2}
         safeZone="bottom band"
         safeStyle="warm tint"
         safeContrast="4.5:1"
@@ -42,8 +44,8 @@ export default function Hero() {
         safeFeather={0.5}
         safeRichness={0.4}
       />
-      {/* Seamless melt into the section below (Stats, bg-ink-900). */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-ink-900" />
+      {/* Long melt into the section below (Stats, bg-ink-900) so no seam shows. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-ink-900 md:h-80" />
 
       <Navbar />
 
