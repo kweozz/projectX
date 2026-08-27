@@ -312,13 +312,6 @@ function MethodSection() {
   const arrowBase =
     'flex size-14 items-center justify-center rounded-full transition-colors duration-200'
 
-  // Cards fade out at the edges instead of hard-clipping. The left edge stays
-  // sharp at rest (matching Figma) and only starts fading once scrolled; the
-  // right fade disappears at the end so the last card is fully clear.
-  const leftStop = atStart ? '#000 0px' : 'transparent 0px, #000 64px'
-  const rightStop = atEnd ? '#000 100%' : '#000 calc(100% - 104px), transparent 100%'
-  const edgeMask = `linear-gradient(to right, ${leftStop}, ${rightStop})`
-
   return (
     <section className="bg-white py-20 md:py-30">
       <div className="mx-auto max-w-[1600px] px-6 md:px-16">
@@ -368,21 +361,22 @@ function MethodSection() {
             </Reveal>
           </div>
 
+          {/* Rounded viewport: cards clip cleanly behind its rounded edge as
+              they scroll (same radius as the cards) — flowbase-style, no drag. */}
           <motion.div
             ref={trackRef}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '0px 0px -15% 0px' }}
             transition={{ staggerChildren: 0.1 }}
-            style={{ WebkitMaskImage: edgeMask, maskImage: edgeMask }}
-            className="no-scrollbar -mr-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 pr-6 md:-mr-16 md:pr-16 lg:min-w-0 lg:flex-1"
+            className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden rounded-[10px] lg:min-w-0 lg:flex-1"
           >
             {METHOD.map((m) => (
               <motion.article
                 key={m.phase}
                 variants={{
-                  hidden: { opacity: 0, y: 28 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease } },
+                  hidden: { opacity: 0 },
+                  show: { opacity: 1, transition: { duration: 0.6, ease } },
                 }}
                 className="group relative flex h-[440px] w-[300px] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-[10px] bg-ink-900 sm:w-[360px] lg:h-[480px] lg:w-[432px]"
               >
