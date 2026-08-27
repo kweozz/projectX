@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { QuoteMark } from '../icons'
+import RevealImage from '../RevealImage'
 import robin from '../../assets/partners/robin.webp'
 import hendrik from '../../assets/partners/hendrik.webp'
 
@@ -59,14 +60,12 @@ export default function Partners() {
               }}
               className="flex w-full flex-col lg:w-[386px]"
             >
-              <div className="overflow-hidden rounded-[11px] bg-card">
-                <img
-                  src={partner.image}
-                  alt={partner.name}
-                  style={{ objectPosition: partner.objectPosition }}
-                  className="h-[420px] w-full object-cover lg:h-[483px]"
-                />
-              </div>
+              <RevealImage
+                src={partner.image}
+                alt={partner.name}
+                objectPosition={partner.objectPosition}
+                className="h-[420px] w-full rounded-[11px] bg-card lg:h-[483px]"
+              />
 
               <figcaption className="flex flex-col gap-5 pt-5">
                 <div className="flex items-center gap-3.5">

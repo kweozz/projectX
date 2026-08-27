@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import MaskedText from '../MaskedText'
+import RevealImage from '../RevealImage'
 import bouw from '../../assets/sectors/bouw.webp'
 import maak from '../../assets/sectors/maak.webp'
 import zorg from '../../assets/sectors/zorg.webp'
@@ -68,13 +69,11 @@ export default function Sectors() {
               }}
               className={`group flex flex-col gap-6 ${sector.offset}`}
             >
-              <div className={`overflow-hidden rounded-[10px] ${sector.imgHeight}`}>
-                <img
-                  src={sector.image}
-                  alt={sector.title}
-                  className="size-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
-                />
-              </div>
+              <RevealImage
+                src={sector.image}
+                alt={sector.title}
+                className={`rounded-[10px] ${sector.imgHeight}`}
+              />
               <div className="flex flex-col gap-2">
                 <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-white">
                   {sector.title}
