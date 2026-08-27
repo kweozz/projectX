@@ -17,6 +17,24 @@ export type FractalPalette =
   | 'copper rose'
   | 'desert clay'
 
+export type SafeZone =
+  | 'off'
+  | 'bottom-left'
+  | 'left column'
+  | 'bottom band'
+  | 'top-left'
+  | 'center plate'
+  | 'center band'
+  | 'top band'
+  | 'whole frame'
+export type SafeContrast = 'off' | '3:1' | '4.5:1' | '7:1'
+
+const SAFE_MODES: Record<SafeZone, number> = {
+  off: 0, 'bottom-left': 1, 'left column': 2, 'bottom band': 3, 'top-left': 4,
+  'center plate': 5, 'center band': 6, 'top band': 7, 'whole frame': 8,
+}
+const SAFE_RATIOS: Record<SafeContrast, number> = { off: 0, '3:1': 3, '4.5:1': 4.5, '7:1': 7 }
+
 type Vec3 = [number, number, number]
 type PaletteDef = { base: Vec3; safe: Vec3; ember: Vec3; c: Vec3[] }
 
@@ -46,7 +64,16 @@ uniform float uWarpStrength, uNoiseScale, uExposure, uGrain;
 uniform float uPhase, uNoiseTravel;
 uniform float uFluteAngle;
 uniform vec3 uPalBase, uPal1, uPal2, uPal3, uPal4, uPal5;
+uniform float uSafeMode, uSafeSize, uSafeDark, uSafeFeather, uSafeRatio;
+uniform vec3 uSafeBase, uSafeEmber;
+uniform float uSafeStyle, uSafeRich;
 #define TAU 6.28318530718
+
+// WCAG relative luminance needs linearised sRGB, not display values
+float s2l(float c){ c = clamp(c, 0.0, 1.0); return c <= 0.04045 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4); }
+float l2s(float c){ c = clamp(c, 0.0, 1.0); return c <= 0.0031308 ? c * 12.92 : 1.055 * pow(c, 1.0 / 2.4) - 0.055; }
+float SS(float a, float b, float x){ float t = clamp((x - a) / max(b - a, 1e-5), 0.0, 1.0); return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); }
+float wcagLum(vec3 c){ return 0.2126 * s2l(c.r) + 0.7152 * s2l(c.g) + 0.0722 * s2l(c.b); }
 
 vec3 permute(vec3 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
 float snoise(vec2 v){
@@ -105,6 +132,55 @@ void main(){
   vec2 fluted = (rot.x + flutedX) * ax + (rot.y + flutedY) * ay;
   vec3 color = blobs(fluted / 1000.0);
   color = 1.0 - exp(-color * uExposure);
+
+  // text-safe zone: hold one region dark so light type stays legible
+  if (uSafeMode > 0.5) {
+    vec2 s = gl_FragCoord.xy / uPixelRatio / uRes;   // 0..1, origin bottom-left
+    float fade = max(uSafeFeather, 0.001);
+    float m = 0.0;
+    float fromLeft   = 1.0 - SS(uSafeSize, uSafeSize + fade, s.x);
+    float fromBottom = 1.0 - SS(uSafeSize, uSafeSize + fade, s.y);
+    float fromTop    = 1.0 - SS(uSafeSize, uSafeSize + fade, 1.0 - s.y);
+    float halfX = 1.0 - SS(uSafeSize, uSafeSize + fade, abs(s.x - 0.5) * 2.0);
+    float halfY = 1.0 - SS(uSafeSize, uSafeSize + fade, abs(s.y - 0.5) * 2.0);
+    if (uSafeMode < 1.5)      m = fromLeft * fromBottom;   // bottom-left corner
+    else if (uSafeMode < 2.5) m = fromLeft;                // left column
+    else if (uSafeMode < 3.5) m = fromBottom;              // bottom band
+    else if (uSafeMode < 4.5) m = fromLeft * fromTop;      // top-left corner
+    else if (uSafeMode < 5.5) m = halfX * halfY;           // centred plate
+    else if (uSafeMode < 6.5) m = halfY;                   // centred band
+    else if (uSafeMode < 7.5) m = fromTop;                 // top band
+    else                      m = 1.0;                     // whole frame
+    m = clamp(m, 0.0, 1.0);
+
+    // dim in linear light, then recover chroma so gold doesn't go olive/grey
+    float dim = mix(1.0, 1.0 - uSafeDark * 0.85, m);
+    vec3 lin = vec3(s2l(color.r), s2l(color.g), s2l(color.b)) * dim;
+    float lumLin = dot(lin, vec3(0.2126, 0.7152, 0.0722));
+    lin = max(mix(vec3(lumLin), lin, 1.0 + uSafeRich * m), vec3(0.0));
+    color = vec3(l2s(lin.r), l2s(lin.g), l2s(lin.b));
+
+    // optional warm tint toward the palette's roasted tone
+    if (uSafeStyle > 0.5) {
+      float lum = dot(color, vec3(0.2126, 0.7152, 0.0722));
+      vec3 warm = uSafeBase + uSafeEmber * smoothstep(0.06, 1.0, lum) * 0.70;
+      color = mix(color, warm, m * 0.55);
+    }
+
+    // hard WCAG guarantee vs white type: cap the zone's relative luminance at
+    // the level the chosen ratio allows (white L = 1, contrast = 1.05/(L+0.05))
+    if (uSafeRatio > 1.05) {
+      float Lmax = 1.05 / uSafeRatio - 0.05;
+      float L = wcagLum(color);
+      float k = 1.0 / (1.0 + L / max(Lmax, 1e-4));   // asymptotic, stays under Lmax
+      k = mix(1.0, k, m);
+      vec3 clin = vec3(s2l(color.r), s2l(color.g), s2l(color.b)) * k;
+      float cg = dot(clin, vec3(0.2126, 0.7152, 0.0722));
+      clin = max(mix(vec3(cg), clin, 1.0 + uSafeRich * 0.6 * m), vec3(0.0));
+      color = vec3(l2s(clin.r), l2s(clin.g), l2s(clin.b));
+    }
+  }
+
   float grain = hash(gl_FragCoord.xy + fract(uTime) * 91.7) * 2.0 - 1.0;
   color += grain * uGrain * max(color.r, max(color.g, color.b));
   gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
@@ -123,6 +199,14 @@ export interface FractalGlassProps {
   noiseTravel?: number
   exposure?: number
   grain?: number
+  // WCAG text-safe zone: hold one region dark so light type stays legible
+  safeZone?: SafeZone
+  safeStyle?: 'clean dim' | 'warm tint'
+  safeContrast?: SafeContrast
+  safeSize?: number
+  safeDarkness?: number
+  safeFeather?: number
+  safeRichness?: number
   /** Shown when WebGL is unavailable. */
   poster?: string
 }
@@ -140,13 +224,20 @@ export default function FractalGlass({
   noiseTravel = 0.3,
   exposure = 1.45,
   grain = 0,
+  safeZone = 'off',
+  safeStyle = 'warm tint',
+  safeContrast = '4.5:1',
+  safeSize = 0.3,
+  safeDarkness = 0.4,
+  safeFeather = 0.52,
+  safeRichness = 0.5,
   poster,
 }: FractalGlassProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [failed, setFailed] = useState(false)
   // latest prop values, read inside the animation loop without re-initialising
-  const props = useRef({ palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain })
-  props.current = { palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain }
+  const props = useRef({ palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness })
+  props.current = { palette, loopSeconds, fluteWidth, fluteStrength, fluteShine, fluteAngle, warpStrength, noiseScale, noiseTravel, exposure, grain, safeZone, safeStyle, safeContrast, safeSize, safeDarkness, safeFeather, safeRichness }
 
   useEffect(() => {
     const cv = canvasRef.current
@@ -183,6 +274,9 @@ export default function FractalGlass({
       phase: U('uPhase'), travel: U('uNoiseTravel'), fAngle: U('uFluteAngle'),
       pBase: U('uPalBase'), p1: U('uPal1'), p2: U('uPal2'), p3: U('uPal3'), p4: U('uPal4'), p5: U('uPal5'),
       exp: U('uExposure'), grain: U('uGrain'),
+      sMode: U('uSafeMode'), sSize: U('uSafeSize'), sDark: U('uSafeDark'),
+      sFeather: U('uSafeFeather'), sRatio: U('uSafeRatio'),
+      sBase: U('uSafeBase'), sEmber: U('uSafeEmber'), sStyle: U('uSafeStyle'), sRich: U('uSafeRich'),
     }
 
     const onResize = () => {
@@ -213,6 +307,14 @@ export default function FractalGlass({
       gl.uniform1f(u.fAngle, p.fluteAngle)
       gl.uniform3fv(u.pBase, P.base); gl.uniform3fv(u.p1, P.c[0]); gl.uniform3fv(u.p2, P.c[1])
       gl.uniform3fv(u.p3, P.c[2]); gl.uniform3fv(u.p4, P.c[3]); gl.uniform3fv(u.p5, P.c[4])
+      gl.uniform1f(u.sMode, SAFE_MODES[p.safeZone] ?? 0)
+      gl.uniform1f(u.sSize, p.safeSize)
+      gl.uniform1f(u.sDark, p.safeDarkness)
+      gl.uniform1f(u.sFeather, p.safeFeather)
+      gl.uniform1f(u.sRatio, SAFE_RATIOS[p.safeContrast] ?? 0)
+      gl.uniform1f(u.sStyle, p.safeStyle === 'warm tint' ? 1 : 0)
+      gl.uniform1f(u.sRich, p.safeRichness)
+      gl.uniform3fv(u.sBase, P.safe); gl.uniform3fv(u.sEmber, P.ember)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
 
