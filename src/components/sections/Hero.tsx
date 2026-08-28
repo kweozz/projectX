@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import Navbar from '../Navbar'
 import MaskedText from '../MaskedText'
 import FractalGlass from '../FractalGlass'
 import { ArrowUpRight } from '../icons'
@@ -50,8 +49,6 @@ export default function Hero() {
       {/* Match the section colour exactly at the seam. The bottom is already
           brown here, so this brown->ink-900 blend is invisible (no band). */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
-
-      <Navbar />
 
       {/* Hero content */}
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">

@@ -1,3 +1,4 @@
+import Navbar from '../components/Navbar'
 import Hero from '../components/sections/Hero'
 import Stats from '../components/sections/Stats'
 import Faq from '../components/sections/Faq'
@@ -12,6 +13,9 @@ import Footer from '../components/sections/Footer'
 export default function Home() {
   return (
     <>
+      {/* Rendered outside the sticky hero context so it always floats on top. */}
+      <Navbar />
+
       {/* Clean opening transition (avexa-style): the hero pins while the first
           section scrolls up and covers it. Only this pair shares the sticky
           context, so the hero releases once Stats has taken over. */}
