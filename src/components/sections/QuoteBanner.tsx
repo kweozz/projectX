@@ -14,21 +14,22 @@ export default function QuoteBanner() {
   // Nested parallax: the background keeps travelling behind the quote block,
   // and the block itself drifts at a different rate over it — depth, "block in
   // block". The bg layer is oversized so it never reveals an edge.
-  const bgY = useTransform(scrollYProgress, [0, 1], ['-12%', '12%'])
-  const quoteY = useTransform(scrollYProgress, [0, 1], ['12%', '-12%'])
+  const bgY = useTransform(scrollYProgress, [0, 1], ['-18%', '18%'])
+  const quoteY = useTransform(scrollYProgress, [0, 1], ['14%', '-14%'])
 
   return (
     <section className="bg-ink">
       <div
         ref={ref}
-        className="relative flex min-h-[480px] items-center overflow-hidden md:min-h-[612px]"
+        className="relative flex min-h-[560px] items-center overflow-hidden md:min-h-[720px]"
       >
-        {/* Continuing background (parallax) */}
+        {/* Continuing background (parallax) — oversized so the stronger drift
+            never reveals an edge */}
         <motion.img
           src={quoteBg}
           alt=""
           style={{ y: bgY }}
-          className="absolute inset-x-0 top-[-16%] h-[132%] w-full object-cover"
+          className="absolute inset-x-0 top-[-35%] h-[170%] w-full object-cover"
         />
         <div className="absolute inset-0 bg-black/35" />
 
