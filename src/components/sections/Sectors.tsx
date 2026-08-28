@@ -73,6 +73,7 @@ export default function Sectors() {
                 src={sector.image}
                 alt={sector.title}
                 parallax={6}
+                clip
                 className={`rounded-[10px] ${sector.imgHeight}`}
               />
               <div className="flex flex-col gap-2">

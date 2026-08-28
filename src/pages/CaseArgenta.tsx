@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
@@ -93,6 +94,15 @@ const subHeading =
   'font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-ink'
 
 export default function CaseArgenta() {
+  // Cuberto-style grow: the big hero image scales up from a slightly inset
+  // frame to full as it settles into view.
+  const heroImgRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress: heroP } = useScroll({
+    target: heroImgRef,
+    offset: ['start end', 'center center'],
+  })
+  const heroScale = useTransform(heroP, [0, 1], [0.88, 1])
+
   return (
     <div className="bg-ink-900">
       <Navbar />
@@ -143,14 +153,18 @@ export default function CaseArgenta() {
           </div>
 
           <Reveal mount delay={0.25}>
-            <div className="overflow-hidden rounded-xl">
+            <motion.div
+              ref={heroImgRef}
+              style={{ scale: heroScale }}
+              className="origin-center overflow-hidden rounded-xl"
+            >
               <img
                 src={argenta}
                 alt="Argenta"
                 className="h-[300px] w-full object-cover md:h-[490px]"
                 style={{ objectPosition: '50% 45%' }}
               />
-            </div>
+            </motion.div>
           </Reveal>
 
           {/* Meta as bordered cards (not table-lines) */}
