@@ -90,7 +90,7 @@ const SERVICES: Service[] = [
     description:
       'De TO-BE wordt uitgetekend — journeys, processen, rollen — niet enkel een KPI-lijst. Het toekomstige bedrijf wordt getekend op concrete deliverables.',
     image: roadmapImg,
-    objectPosition: '50% 32%',
+    objectPosition: '50% 55%',
     parts: [
       {
         title: 'KPI-boom & benchmark',
