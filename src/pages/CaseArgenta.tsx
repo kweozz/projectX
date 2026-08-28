@@ -101,7 +101,7 @@ export default function CaseArgenta() {
     target: heroImgRef,
     offset: ['start end', 'center center'],
   })
-  const heroScale = useTransform(heroP, [0, 1], [0.88, 1])
+  const heroScale = useTransform(heroP, [0, 1], [0.72, 1])
 
   return (
     <div className="bg-ink-900">
