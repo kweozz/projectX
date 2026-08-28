@@ -9,7 +9,7 @@ import ScrollRevealText from '../components/ScrollRevealText'
 import MaskedText from '../components/MaskedText'
 import RevealImage from '../components/RevealImage'
 import { ArrowRight, CheckCircle, QuoteMark } from '../components/icons'
-import argenta from '../assets/projects/argenta.webp'
+import argenta from '../assets/case/argenta-hero.webp'
 import panel from '../assets/process/panel.webp'
 import quoteTeam from '../assets/case/quote-team.webp'
 // Alternating story blocks (from Figma 730-434)
@@ -220,6 +220,7 @@ export default function CaseArgenta() {
                 src={challengeImg}
                 alt=""
                 parallax={7}
+                slideFrom="right"
                 className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:order-2 lg:h-[600px] lg:rounded-l-[10px] lg:rounded-r-none"
               />
             </div>
@@ -232,6 +233,7 @@ export default function CaseArgenta() {
                 src={approachImg}
                 alt=""
                 parallax={7}
+                slideFrom="left"
                 className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:order-1 lg:h-[600px] lg:rounded-l-none lg:rounded-r-[10px]"
               />
               <div className="flex flex-col gap-8 lg:order-2">
@@ -281,12 +283,14 @@ export default function CaseArgenta() {
                   src={exec1Img}
                   alt=""
                   parallax={6}
+                  slideFrom="up"
                   className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:h-full"
                 />
                 <RevealImage
                   src={exec2Img}
                   alt=""
                   parallax={9}
+                  slideFrom="up"
                   className="h-[320px] w-full rounded-[10px] sm:h-[440px] lg:h-full lg:rounded-l-[10px] lg:rounded-r-none"
                 />
               </div>
