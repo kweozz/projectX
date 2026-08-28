@@ -12,8 +12,18 @@ import Footer from '../components/sections/Footer'
 export default function Home() {
   return (
     <>
-      <Hero />
-      <Stats />
+      {/* Clean opening transition (avexa-style): the hero pins while the first
+          section scrolls up and covers it. Only this pair shares the sticky
+          context, so the hero releases once Stats has taken over. */}
+      <div className="relative">
+        <div className="sticky top-0 h-[100svh] overflow-hidden">
+          <Hero />
+        </div>
+        <div className="relative z-10 overflow-hidden rounded-t-[28px] shadow-[0_-30px_60px_-30px_rgba(0,0,0,0.6)]">
+          <Stats />
+        </div>
+      </div>
+
       <Faq />
       <QuoteBanner />
       <Process />
