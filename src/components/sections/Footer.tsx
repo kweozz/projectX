@@ -118,7 +118,7 @@ export default function Footer() {
             <div className="flex max-w-[340px] flex-col gap-8">
               <div className="flex items-center gap-4">
                 <img src={logo} alt="" className="size-[26px]" />
-                <span className="font-sans text-2xl text-cream">Lumen</span>
+                <span className="font-sans text-2xl text-cream">Allume</span>
               </div>
               <div className="flex flex-col gap-3 font-display text-sm">
                 <p className="leading-relaxed text-[#e2e0db]">
@@ -126,7 +126,7 @@ export default function Footer() {
                   gedragen door uw team.
                 </p>
                 <p className="leading-relaxed text-[#a69f9b]">
-                  Prins Boudewijnlaan 24E, 2550 Kontich · info@lumen2032.be · +32 (0)9 281 33 00
+                  Prins Boudewijnlaan 24E, 2550 Kontich · info@allume2032.be · +32 (0)9 281 33 00
                 </p>
               </div>
             </div>
@@ -158,7 +158,7 @@ export default function Footer() {
           {/* Lower bar */}
           <div className="flex flex-col-reverse items-start justify-between gap-6 sm:flex-row sm:items-center">
             <p className="font-display text-sm text-[#a69f9b]">
-              © 2026 Lumen — Alle rechten voorbehouden.
+              © 2026 Allume — Alle rechten voorbehouden.
             </p>
             <div className="flex items-center gap-4">
               {SOCIALS.map((social) => (

@@ -35,7 +35,7 @@ export default function Navbar() {
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">
         <Link to="/" className="flex items-center gap-4">
           <img src={logo} alt="" className="size-[26px]" />
-          <span className="font-sans text-2xl text-cream">Lumen</span>
+          <span className="font-sans text-2xl text-cream">Allume</span>
         </Link>
 
         {/* Desktop nav */}

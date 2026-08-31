@@ -10,7 +10,7 @@ import heroPoster from '../assets/hero/hero-bg.webp'
 const ease = [0.22, 1, 0.36, 1] as const
 
 const DETAILS = [
-  { label: 'E-mail', value: 'info@lumen2032.be', href: 'mailto:info@lumen2032.be' },
+  { label: 'E-mail', value: 'info@allume2032.be', href: 'mailto:info@allume2032.be' },
   { label: 'Telefoon', value: '+32 (0)9 281 33 00', href: 'tel:+3292813300' },
   { label: 'Kantoor', value: 'Prins Boudewijnlaan 24E, 2550 Kontich', href: null },
 ]
@@ -38,7 +38,7 @@ export default function Contact() {
       '',
       form.bericht,
     ].join('\n')
-    window.location.href = `mailto:info@lumen2032.be?subject=${encodeURIComponent(
+    window.location.href = `mailto:info@allume2032.be?subject=${encodeURIComponent(
       `Aanvraag ${form.reden} — ${form.naam}`,
     )}&body=${encodeURIComponent(body)}`
   }

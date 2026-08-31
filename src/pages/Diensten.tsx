@@ -22,7 +22,7 @@ import mExec from '../assets/method/uitvoering.webp'
 const ease = [0.22, 1, 0.36, 1] as const
 const viewport = { once: true, margin: '0px 0px -15% 0px' }
 
-// Lumen mark, used as an alpha mask so a video plays inside the logo silhouette.
+// Allume mark, used as an alpha mask so a video plays inside the logo silhouette.
 const LOGO_MASK =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Cpath d='M4.30859 17.3086H8.61719V0H26V26H0V0H4.30859V17.3086ZM13 8.68652V25.9951H17.3086V8.68652H13Z' fill='%23000'/%3E%3C/svg%3E\")"
 
@@ -448,7 +448,7 @@ export default function Diensten() {
       {/* Method — "Zo verloopt een traject" carousel */}
       <MethodSection />
 
-      {/* The four roles (dark) — Lumen mark plays a video inside its silhouette */}
+      {/* The four roles (dark) — Allume mark plays a video inside its silhouette */}
       <section className="bg-ink-900 py-20 md:py-30">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-16 px-6 md:px-16">
           <Reveal>
