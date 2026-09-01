@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
-import { ArrowRight } from '../components/icons'
+import Button from '../components/Button'
 import MaskedText from '../components/MaskedText'
 import heroBg from '../assets/hero/hero-bg.mp4'
 import heroPoster from '../assets/hero/hero-bg.webp'
@@ -161,13 +161,9 @@ export default function Contact() {
                 placeholder="Vertel kort waar u mee zit."
               />
             </label>
-            <button
-              type="submit"
-              className="group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cta px-7 font-display text-base font-medium uppercase text-cream transition-transform duration-200 hover:-translate-y-0.5"
-            >
+            <Button variant="primary" surface="light" type="submit" icon className="w-fit">
               Verstuur bericht
-              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </button>
+            </Button>
           </motion.form>
         </div>
       </section>

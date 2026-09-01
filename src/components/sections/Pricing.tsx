@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { ArrowUpRight, CheckCircle } from '../icons'
+import { CheckCircle } from '../icons'
+import Button from '../Button'
 import banner from '../../assets/pricing/banner.webp'
 
 type Plan = {
@@ -88,13 +89,9 @@ function PricingCard({ plan }: { plan: Plan }) {
         ))}
       </ul>
 
-      <a
-        href="/contact"
-        className="group mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-full bg-cta px-6 font-display text-base font-medium uppercase text-cream transition-transform duration-200 hover:-translate-y-0.5"
-      >
+      <Button variant="primary" surface="light" to="/contact" icon arrow="up-right" className="mt-auto">
         Plan een gesprek
-        <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-      </a>
+      </Button>
     </motion.div>
   )
 }

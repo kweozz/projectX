@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight } from './icons'
-import logo from '../assets/hero/logo.svg'
+import Button from './Button'
+import logo from '../assets/allume-logo.svg'
 
 const NAV_LINKS = [
   { label: 'Onze aanpak', href: '/#aanpak' },
@@ -33,9 +33,8 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">
-        <Link to="/" className="flex items-center gap-4">
-          <img src={logo} alt="" className="size-[26px]" />
-          <span className="font-sans text-2xl text-cream">Allume</span>
+        <Link to="/" className="flex items-center">
+          <img src={logo} alt="Allume" className="h-[26px] w-auto" />
         </Link>
 
         {/* Desktop nav */}
@@ -59,13 +58,9 @@ export default function Navbar() {
               </a>
             ),
           )}
-          <Link
-            to="/contact"
-            className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-cream px-5 font-display text-sm font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5"
-          >
+          <Button variant="primary" surface="dark" size="sm" to="/contact" icon arrow="up-right">
             Contacteer ons
-            <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
+          </Button>
         </div>
 
         {/* Mobile toggle */}
@@ -115,14 +110,17 @@ export default function Navbar() {
               </a>
             ),
           )}
-          <Link
+          <Button
+            variant="primary"
+            surface="dark"
+            size="sm"
             to="/contact"
+            icon
+            arrow="up-right"
             onClick={() => setOpen(false)}
-            className="inline-flex h-11 w-fit items-center justify-center gap-2 rounded-full bg-cream px-5 font-display text-sm font-medium uppercase text-ink"
           >
             Contacteer ons
-            <ArrowUpRight className="size-4" />
-          </Link>
+          </Button>
         </motion.div>
       )}
     </motion.header>

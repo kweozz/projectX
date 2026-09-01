@@ -1,5 +1,6 @@
-import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react'
-import { ArrowRight } from './icons'
+import type { CSSProperties, MouseEventHandler, ReactNode } from 'react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, ArrowUpRight } from './icons'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'danger' | 'tertiary'
 export type ButtonSurface = 'light' | 'dark'
@@ -20,7 +21,7 @@ const TOKENS: Record<string, Record<string, string>> = {
 }
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'h-10 px-5 text-sm',
+  sm: 'h-11 px-5 text-sm',
   md: 'h-12 px-7 text-sm md:text-base',
 }
 
@@ -33,14 +34,23 @@ function Spinner() {
   )
 }
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps {
   variant?: ButtonVariant
   surface?: ButtonSurface
   size?: ButtonSize
   icon?: boolean
+  arrow?: 'right' | 'up-right'
   loading?: boolean
+  disabled?: boolean
+  /** Render as a router link / anchor instead of a <button>. */
+  to?: string
+  href?: string
+  onClick?: MouseEventHandler
+  type?: 'button' | 'submit'
+  'aria-label'?: string
   /** Docs only: force a visual state on /ui. */
   force?: ForceState
+  className?: string
   children: ReactNode
 }
 
@@ -49,47 +59,71 @@ export default function Button({
   surface = 'light',
   size = 'md',
   icon = false,
+  arrow = 'right',
   loading = false,
+  disabled = false,
+  to,
+  href,
+  onClick,
+  type = 'button',
   force,
-  disabled,
-  children,
   className = '',
-  ...rest
+  children,
+  ...aria
 }: ButtonProps) {
   const key =
     variant === 'accent' || variant === 'danger' ? variant : `${variant}-${surface}`
   const offset = surface === 'dark' ? '#210b03' : '#ffffff'
   const style = { ...TOKENS[key], '--btn-offset': offset } as CSSProperties
   const isDisabled = disabled || loading
+  const tertiary = variant === 'tertiary'
 
-  if (variant === 'tertiary') {
+  const iconEl = icon ? (
+    arrow === 'up-right' ? (
+      <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+    ) : (
+      <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+    )
+  ) : null
+
+  const cls = tertiary
+    ? `btn-text group ${size === 'md' ? 'text-sm md:text-base' : 'text-sm'} ${className}`
+    : `btn group ${SIZES[size]} ${className}`
+
+  const inner = loading ? (
+    <Spinner />
+  ) : (
+    <>
+      {tertiary ? <span>{children}</span> : children}
+      {iconEl}
+    </>
+  )
+
+  if (to && !isDisabled) {
     return (
-      <button
-        type="button"
-        className={`btn-text ${size === 'md' ? 'text-sm md:text-base' : 'text-sm'} ${className}`}
-        style={style}
-        disabled={isDisabled}
-        data-force={force}
-        {...rest}
-      >
-        <span>{children}</span>
-        {icon && <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />}
-      </button>
+      <Link to={to} className={cls} style={style} onClick={onClick} data-force={force} {...aria}>
+        {inner}
+      </Link>
     )
   }
-
+  if (href && !isDisabled) {
+    return (
+      <a href={href} className={cls} style={style} onClick={onClick} data-force={force} {...aria}>
+        {inner}
+      </a>
+    )
+  }
   return (
     <button
-      type="button"
-      className={`btn ${SIZES[size]} ${className}`}
+      type={type}
+      className={cls}
       style={style}
       disabled={isDisabled}
+      onClick={onClick}
       data-force={force}
-      {...rest}
+      {...aria}
     >
-      {loading && <Spinner />}
-      {!loading && children}
-      {!loading && icon && <ArrowRight className="size-4" />}
+      {inner}
     </button>
   )
 }

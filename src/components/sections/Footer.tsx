@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight } from '../icons'
+import Button from '../Button'
 import FractalGlass from '../FractalGlass'
-import logo from '../../assets/hero/logo.svg'
+import logo from '../../assets/allume-logo.svg'
 import ctaPoster from '../../assets/cta/cta-bg.webp'
 import linkedin from '../../assets/cta/linkedin.svg'
 import twitter from '../../assets/cta/twitter.svg'
@@ -88,22 +88,12 @@ export default function Footer() {
             beeld op.
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-6">
-            <a
-              href="/contact"
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-display text-sm font-medium uppercase tracking-tight text-ink transition-transform duration-200 hover:-translate-y-0.5"
-            >
+            <Button variant="primary" surface="dark" size="sm" to="/contact" icon>
               Plan een gesprek
-              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </a>
-            <a
-              href="/contact"
-              className="group inline-flex items-center gap-2 font-display text-sm font-medium uppercase tracking-tight text-white"
-            >
-              <span className="underline decoration-from-font underline-offset-4">
-                Of begin met de 2032-zelfscan
-              </span>
-              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </a>
+            </Button>
+            <Button variant="tertiary" surface="dark" size="sm" to="/contact" icon>
+              Of begin met de 2032-zelfscan
+            </Button>
           </div>
         </motion.div>
         </motion.div>
@@ -116,10 +106,7 @@ export default function Footer() {
           <div className="flex flex-col justify-between gap-12 md:flex-row md:gap-16">
             {/* Brand */}
             <div className="flex max-w-[340px] flex-col gap-8">
-              <div className="flex items-center gap-4">
-                <img src={logo} alt="" className="size-[26px]" />
-                <span className="font-sans text-2xl text-cream">Allume</span>
-              </div>
+              <img src={logo} alt="Allume" className="h-[28px] w-auto self-start" />
               <div className="flex flex-col gap-3 font-display text-sm">
                 <p className="leading-relaxed text-[#e2e0db]">
                   Strategisch advies voor Vlaamse kmo&apos;s. Gestuurd door uw cijfers,

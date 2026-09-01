@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
-import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/sections/Footer'
 import MaskedText from '../components/MaskedText'
 import { ArrowRight } from '../components/icons'
+import Button from '../components/Button'
 import heroBg from '../assets/hero/hero-bg.mp4'
 import heroPoster from '../assets/hero/hero-bg.webp'
 import scanImg from '../assets/services/scan.webp'
@@ -24,7 +24,7 @@ const viewport = { once: true, margin: '0px 0px -15% 0px' }
 
 // Allume mark, used as an alpha mask so a video plays inside the logo silhouette.
 const LOGO_MASK =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Cpath d='M4.30859 17.3086H8.61719V0H26V26H0V0H4.30859V17.3086ZM13 8.68652V25.9951H17.3086V8.68652H13Z' fill='%23000'/%3E%3C/svg%3E\")"
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 297 235'%3E%3Cpath d='M210.335 233.34L109.233 2.80325C108.654 1.48168 109.622 0 111.065 0H140.673C141.46 0 142.174 0.461543 142.496 1.17921L246.247 231.716C246.843 233.04 245.875 234.537 244.423 234.537H212.166C211.372 234.537 210.653 234.067 210.335 233.34Z' fill='%23000'/%3E%3Cpath d='M259.606 233.34L158.505 2.80325C157.925 1.48168 158.893 0 160.336 0H189.944C190.731 0 191.445 0.461543 191.768 1.17921L295.519 231.716C296.114 233.04 295.146 234.537 293.695 234.537H261.438C260.644 234.537 259.925 234.067 259.606 233.34Z' fill='%23000'/%3E%3Cpath d='M144.958 115.465L98.5059 4.44326C97.8188 2.80108 95.49 2.80738 94.8118 4.45324L1.13815 231.775C0.595687 233.092 1.5635 234.537 2.9873 234.537H95.3066C96.1175 234.537 96.8481 234.048 97.1564 233.298L144.963 116.998C145.165 116.506 145.163 115.955 144.958 115.465Z' fill='%23000'/%3E%3C/svg%3E\")"
 
 function Reveal({
   children,
@@ -47,14 +47,6 @@ function Reveal({
     </motion.div>
   )
 }
-
-// CTA on a dark background: cream pill, ink label (matches the Figma service cards).
-const ctaOnDark =
-  'group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cream px-7 font-display text-sm font-medium uppercase text-ink transition-transform duration-200 hover:-translate-y-0.5'
-
-// CTA on a light background: dark (cta) pill, cream label.
-const ctaOnLight =
-  'group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cta px-6 font-display text-base font-medium uppercase text-cream transition-transform duration-200 hover:-translate-y-0.5'
 
 type Service = {
   name: string
@@ -235,10 +227,9 @@ function ServiceCard({
                 </div>
               ))}
             </div>
-            <Link to="/contact" className={`mt-2 ${ctaOnDark}`}>
+            <Button variant="primary" surface="dark" to="/contact" icon className="mt-2 w-fit">
               Plan een gesprek
-              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </Link>
+            </Button>
           </div>
         </div>
       </motion.div>
@@ -354,10 +345,9 @@ function MethodSection() {
               </p>
             </Reveal>
             <Reveal delay={0.1}>
-              <Link to="/contact" className={ctaOnLight}>
+              <Button variant="primary" surface="light" to="/contact" icon className="w-fit">
                 Plan een gesprek
-                <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </Link>
+              </Button>
             </Reveal>
           </div>
 

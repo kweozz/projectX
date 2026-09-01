@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowUpRight } from '../icons'
+import Button from '../Button'
 import sunset from '../../assets/process/sunset.webp'
 import panel from '../../assets/process/panel.webp'
 import report from '../../assets/process/report.webp'
@@ -42,15 +42,9 @@ export default function Process() {
               metrics. Getoetst bij echte klanten en medewerkers voor er een euro naar
               een leverancier gaat.
             </p>
-            <a
-              href="/contact"
-              className="group inline-flex items-center gap-2 rounded-full border border-[#78716c] px-6 py-4 font-display text-base font-medium uppercase tracking-tight text-ink transition-colors duration-200 hover:border-ink"
-            >
-              <span className="underline decoration-from-font underline-offset-4">
-                Bekijk een voorbeeld rapport
-              </span>
-              <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            <Button variant="secondary" surface="light" to="/contact" icon arrow="up-right" className="w-fit">
+              Bekijk een voorbeeld rapport
+            </Button>
           </motion.div>
 
           {/* Right collage */}

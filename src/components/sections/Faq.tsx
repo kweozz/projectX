@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowUpRight, ChevronDown } from '../icons'
+import { ChevronDown } from '../icons'
+import Button from '../Button'
 import faqImage from '../../assets/faq/faq.webp'
 
 type QA = { question: string; answer: string }
@@ -107,13 +108,9 @@ export default function Faq() {
             Wij krijgen vaak dezelfde vragen
           </h2>
 
-          <a
-            href="/contact"
-            className="group inline-flex h-12 w-fit items-center justify-center gap-2 rounded-full bg-cta px-6 font-display text-base font-medium text-cream transition-transform duration-200 hover:-translate-y-0.5"
-          >
+          <Button variant="primary" surface="light" to="/contact" icon arrow="up-right" className="w-fit">
             Plan een gesprek
-            <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          </Button>
 
           <div className="group relative mt-auto overflow-hidden rounded-[10px]">
             <img

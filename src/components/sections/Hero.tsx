@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import MaskedText from '../MaskedText'
 import FractalGlass from '../FractalGlass'
-import { ArrowUpRight } from '../icons'
+import Button from '../Button'
 import heroPoster from '../../assets/hero/hero-bg.webp'
 
 const container = {
@@ -75,21 +75,12 @@ export default function Hero() {
           </div>
 
           <motion.div variants={item} className="flex flex-wrap items-center gap-6">
-            <a
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-full bg-cream px-5 py-3 font-sans text-sm font-medium uppercase tracking-tight text-ink-800 transition-transform duration-200 hover:-translate-y-0.5"
-            >
+            <Button variant="primary" surface="dark" size="sm" to="/contact">
               Plan een gesprek
-            </a>
-            <a
-              href="/contact"
-              className="group inline-flex items-center gap-2 font-sans text-sm font-medium uppercase tracking-tight text-white"
-            >
-              <span className="underline decoration-from-font underline-offset-4">
-                Of begin met de 2032-zelfscan
-              </span>
-              <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            </Button>
+            <Button variant="tertiary" surface="dark" size="sm" to="/contact" icon arrow="up-right">
+              Of begin met de 2032-zelfscan
+            </Button>
           </motion.div>
         </motion.div>
       </div>
