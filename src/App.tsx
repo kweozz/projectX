@@ -6,6 +6,7 @@ import Diensten from './pages/Diensten'
 import Cases from './pages/Cases'
 import CaseArgenta from './pages/CaseArgenta'
 import Contact from './pages/Contact'
+import Ui from './pages/Ui'
 import { useSmoothScroll, getLenis } from './hooks/useSmoothScroll'
 
 function ScrollToTop() {
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/cases" element={<Cases />} />
           <Route path="/case/argenta" element={<CaseArgenta />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/ui" element={<Ui />} />
         </Routes>
       </main>
     </BrowserRouter>
