@@ -1,50 +1,47 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
-import Button from '../Button'
-import boardroom from '../../assets/case/carousel-2-boardroom.webp'
-import whiteboard from '../../assets/cases/whiteboard.webp'
-import besix from '../../assets/cases/besix.webp'
+import keuzes from '../../assets/transform/keuzes.webp'
+import advies from '../../assets/transform/advies.webp'
+import begeleiding from '../../assets/transform/begeleiding.webp'
 
 type Block = {
-  name: string
+  title: string
+  text: string
   image: string
   objectPosition?: string
-  description: string
-  parts: { title: string; text: string }[]
+  bg: string
+  fg: string
+  reverse: boolean // panel left / image right
 }
 
-// "Wat wij doen" — the approach, told as three clean stacking blocks.
+// "We helpen bedrijven gericht transformeren" — 3 alternating split panels
+// (Figma 1008:21605): image 60% / panel 40%, colours #d33414 / #210b03 / #f9f6f1.
 const BLOCKS: Block[] = [
   {
-    name: 'Twee blikken, samen',
-    image: boardroom,
-    description:
-      'Een bedrijf lees je van boven, door de cijfers — en van buiten, door de mensen. Bijna niemand biedt ze samen. Wij wel, want wij zíjn die twee blikken.',
-    parts: [
-      { title: 'Robin — van boven', text: 'Businessmodellen en marges, vertaald naar cijfers waar uw management tekent.' },
-      { title: 'Hendrik — van buiten', text: 'Wat klanten en medewerkers écht doen, welke data er ligt en wat ze kost.' },
-    ],
-  },
-  {
-    name: 'Doelen die u zelf ondertekent',
-    image: whiteboard,
-    description:
-      'We bepalen mét u de doelen — voor 2032 én per kwartaal — nagerekend tot de cijfers kloppen. En we toetsen het plan bij echte klanten en medewerkers vóór er een euro naar een leverancier gaat.',
-    parts: [
-      { title: 'Getoetst, niet aangenomen', text: 'Uw plan getest in de praktijk, niet op papier.' },
-      { title: 'Per kwartaal bijgestuurd', text: '2032 wordt kwartaal per kwartaal beslist.' },
-    ],
-  },
-  {
-    name: 'Leveranciersneutraal, als een loods',
-    image: besix,
+    title: 'Van ambitie naar duidelijke keuzes.',
+    text: 'We brengen cijfers, markt en ambities samen en maken concreet waar uw bedrijf naartoe moet.',
+    image: keuzes,
     objectPosition: '50% 40%',
-    description:
-      'We bouwen zelf niets en nemen van niemand commissie — elke briefing gaat neutraal de deur uit, u beslist. En we blijven aan boord zoals een loods: tot uw team zelf de weg kent.',
-    parts: [
-      { title: 'Geen commissie, u beslist', text: 'Iedereen biedt op hetzelfde speelveld.' },
-      { title: 'Vaste prijs, geen lopende teller', text: 'Wie met ons spreekt, krijgt ook ons.' },
-    ],
+    bg: 'bg-rust',
+    fg: 'text-white',
+    reverse: false,
+  },
+  {
+    title: 'Strategisch advies',
+    text: 'We bekijken klanten, medewerkers, processen, systemen en data en tekenen uit hoe ze beter kunnen samenwerken.',
+    image: advies,
+    bg: 'bg-ink-900',
+    fg: 'text-white',
+    reverse: true,
+  },
+  {
+    title: 'Onafhankelijke begeleiding',
+    text: 'We maken concrete werven, zoeken waar nodig de juiste partners en bewaken voortgang, budget en resultaat.',
+    image: begeleiding,
+    objectPosition: '50% 60%',
+    bg: 'bg-card',
+    fg: 'text-ink',
+    reverse: false,
   },
 ]
 
@@ -75,46 +72,48 @@ function BlockCard({
   const isLast = index === total - 1
   const start = index / total
   const end = (index + 1) / total
-  const scale = useTransform(progress, [start, end], [1, 0.86])
-  const opacity = useTransform(progress, [start, end], [1, 0.4])
+  const scale = useTransform(progress, [start, end], [1, 0.9])
+  const opacity = useTransform(progress, [start, end], [1, 0.35])
   const style = isDesktop && !isLast ? { scale, opacity } : undefined
+
+  const image = (
+    <div className="h-56 w-full shrink-0 overflow-hidden sm:h-80 lg:h-full lg:w-[60%]">
+      <img
+        src={b.image}
+        alt=""
+        style={{ objectPosition: b.objectPosition }}
+        className="size-full object-cover"
+      />
+    </div>
+  )
+  const panel = (
+    <div className={`flex flex-1 flex-col justify-between gap-6 p-8 md:p-12 lg:w-[40%] ${b.fg}`}>
+      <h3 className="font-display text-2xl font-semibold leading-[1.15] tracking-[-0.018em] md:text-[28px]">
+        {b.title}
+      </h3>
+      <p className="max-w-[496px] font-display text-lg leading-[1.6] md:text-xl">{b.text}</p>
+    </div>
+  )
 
   return (
     <div className="relative lg:sticky lg:top-0 lg:h-screen" style={{ zIndex: index + 1 }}>
-      <motion.div style={style} className="flex h-full items-center bg-ink-900 py-16 lg:py-0">
-        <div className="grid w-full grid-cols-1 items-center gap-8 px-6 md:px-16 lg:grid-cols-[minmax(0,739px)_1fr] lg:gap-[120px] lg:px-0 lg:pr-[max(4rem,calc((100vw-1600px)/2+4rem))]">
-          {/* Image — flush to the left edge, right corners rounded */}
-          <div className="group relative overflow-hidden rounded-[12px] lg:order-1 lg:rounded-l-none lg:rounded-r-[10px]">
-            <img
-              src={b.image}
-              alt=""
-              style={{ objectPosition: b.objectPosition }}
-              className="h-72 w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04] sm:h-96 lg:h-[min(640px,72vh)]"
-            />
-          </div>
-          {/* Content */}
-          <div className="flex flex-col gap-6 lg:order-2 lg:max-w-[560px]">
-            <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.04] tracking-[-0.02em] text-white">
-              {b.name}
-            </h2>
-            <p className="max-w-[52ch] font-display text-base leading-relaxed text-[#d6d3d1] md:text-lg">
-              {b.description}
-            </p>
-            <div className="mt-1 flex flex-col border-t border-[#44403c]">
-              {b.parts.map((part) => (
-                <div key={part.title} className="flex flex-col gap-1 border-b border-[#44403c] py-4">
-                  <h3 className="font-display text-base font-medium tracking-[-0.01em] text-white">
-                    {part.title}
-                  </h3>
-                  <p className="font-display text-base leading-relaxed text-[#d6d3d1]">{part.text}</p>
-                </div>
-              ))}
-            </div>
-            <Button variant="primary" surface="dark" to="/contact" icon className="mt-2 w-fit">
-              Plan een gesprek
-            </Button>
-          </div>
-        </div>
+      <motion.div
+        style={style}
+        className={`flex h-full overflow-hidden lg:flex-row lg:items-stretch ${b.bg} ${
+          b.reverse ? 'flex-col-reverse' : 'flex-col'
+        }`}
+      >
+        {b.reverse ? (
+          <>
+            {panel}
+            {image}
+          </>
+        ) : (
+          <>
+            {image}
+            {panel}
+          </>
+        )}
       </motion.div>
     </div>
   )
@@ -126,28 +125,29 @@ export default function WhatWeDo() {
 
   return (
     <section id="wat-wij-doen" className="bg-ink-900">
-      {/* Section intro */}
-      <div className="mx-auto max-w-[1600px] px-6 pb-6 pt-20 md:px-16 md:pb-10 md:pt-30">
+      {/* Intro */}
+      <div className="mx-auto max-w-[1440px] px-6 pb-6 pt-20 md:px-16 md:pb-10 md:pt-30">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '0px 0px -20% 0px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="flex max-w-[760px] flex-col gap-4"
+          className="flex max-w-[1100px] flex-col gap-6"
         >
-          <span className="font-display text-sm font-semibold uppercase tracking-[0.12em] text-[#f0a07a]">
-            Wat wij doen
-          </span>
           <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-white">
-            Wij denken mét u. Met twee blikken tegelijk.
+            We helpen bedrijven gericht transformeren.
           </h2>
+          <p className="max-w-[820px] font-display text-lg leading-relaxed text-[#d6d3d1] md:text-xl">
+            Van strategie en bedrijfsvoering tot processen, data en technologie. We brengen
+            alles samen in één plan en begeleiden de uitvoering — onafhankelijk van leveranciers.
+          </p>
         </motion.div>
       </div>
 
-      {/* Sticky-stack blocks (avexa /works style, like the Diensten page) */}
+      {/* Sticky-stacking split panels */}
       <div ref={ref} className="relative">
         {BLOCKS.map((b, i) => (
-          <BlockCard key={b.name} b={b} index={i} total={BLOCKS.length} progress={scrollYProgress} />
+          <BlockCard key={b.title} b={b} index={i} total={BLOCKS.length} progress={scrollYProgress} />
         ))}
       </div>
     </section>
