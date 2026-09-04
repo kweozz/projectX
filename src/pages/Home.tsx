@@ -1,7 +1,6 @@
 import Navbar from '../components/Navbar'
 import Hero from '../components/sections/Hero'
 import Faq from '../components/sections/Faq'
-import Stats from '../components/sections/Stats'
 import Process from '../components/sections/Process'
 import Projects from '../components/sections/Projects'
 import QuoteBanner from '../components/sections/QuoteBanner'
@@ -20,7 +19,6 @@ export default function Home() {
         <Hero />
       </div>
       <Faq />
-      <Stats />
       <Process />
       <Projects />
       <QuoteBanner />

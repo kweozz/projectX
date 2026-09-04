@@ -26,10 +26,8 @@ export default function Navbar() {
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled || open
-          ? 'border-b border-white/10 bg-ink-900/70 backdrop-blur-xl'
-          : 'bg-transparent'
+      className={`fixed inset-x-0 top-0 z-50 bg-rust transition-shadow duration-300 ${
+        scrolled || open ? 'shadow-[0_2px_24px_-10px_rgba(0,0,0,0.5)]' : ''
       }`}
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">

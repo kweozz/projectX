@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import MaskedText from '../MaskedText'
-import FractalGlass from '../FractalGlass'
 import Button from '../Button'
-import heroPoster from '../../assets/hero/hero-bg.webp'
+import heroPhoto from '../../assets/hero/hero-photo.webp'
 
 const container = {
   hidden: {},
@@ -21,36 +21,28 @@ const item = {
 }
 
 export default function Hero() {
-  return (
-    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Live fractal-glass shader background — golden hour palette with a warm-
-          tint WCAG text-safe zone (guaranteed 4.5:1 vs white type), matching the
-          original video. Settings mirror the shader's own tweak values. */}
-      <FractalGlass
-        className="absolute inset-0 size-full"
-        poster={heroPoster}
-        palette="golden hour"
-        loopSeconds={14}
-        fluteWidth={30}
-        fluteStrength={340}
-        fluteShine={58}
-        exposure={1.4}
-        warpStrength={0.09}
-        noiseTravel={0.2}
-        bottomFade={0.6}
-        safeZone="bottom-left"
-        safeStyle="warm tint"
-        safeContrast="4.5:1"
-        safeSize={0.3}
-        safeDarkness={0.42}
-        safeFeather={0.36}
-        safeRichness={0.4}
-      />
-      {/* Match the section colour exactly at the seam. The bottom is already
-          brown here, so this brown->ink-900 blend is invisible (no band). */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  // Subtle parallax: the photo drifts a touch slower than the scroll.
+  const photoY = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
 
-      {/* Hero content */}
+  return (
+    <section id="top" ref={ref} className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
+      {/* Full-bleed hero photograph (woman with the 2032 report). */}
+      <motion.div style={{ y: photoY }} className="absolute inset-0 -bottom-[12%]">
+        <img
+          src={heroPhoto}
+          alt=""
+          className="size-full scale-105 object-cover object-[70%_center]"
+        />
+      </motion.div>
+
+      {/* Legibility + section blend: soft top shade, strong sink to ink-900 at the
+          bottom so the hero flows straight into the FAQ seam (no visible line). */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(33,11,3,0)_0%,rgba(33,11,3,0.18)_32%,rgba(33,11,3,0.24)_59%,rgb(33,11,3)_100%)]" />
+
+      {/* Hero content — bottom-left */}
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">
         <motion.div
           variants={container}
@@ -61,7 +53,7 @@ export default function Hero() {
           <div className="flex flex-col gap-6">
             <motion.h1
               variants={item}
-              className="max-w-[625px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.27] tracking-[-0.019em] text-white"
+              className="max-w-[720px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.2] tracking-[-0.019em] text-white"
             >
               <MaskedText onMount>Waar staat uw bedrijf in 2032?</MaskedText>
             </motion.h1>
