@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronDown } from '../icons'
 import Button from '../Button'
-import faqImage from '../../assets/faq/faq.webp'
+import faqImage from '../../assets/faq/window-sun.webp'
 
 type QA = { question: string; answer: string }
 

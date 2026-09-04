@@ -31,19 +31,19 @@ export default function Hero() {
         poster={heroPoster}
         palette="golden hour"
         loopSeconds={14}
-        fluteWidth={34}
-        fluteStrength={260}
-        fluteShine={30}
+        fluteWidth={30}
+        fluteStrength={340}
+        fluteShine={58}
         exposure={1.4}
         warpStrength={0.09}
         noiseTravel={0.2}
-        bottomFade={1}
+        bottomFade={0.6}
         safeZone="bottom-left"
         safeStyle="warm tint"
         safeContrast="4.5:1"
-        safeSize={0.5}
+        safeSize={0.3}
         safeDarkness={0.42}
-        safeFeather={0.5}
+        safeFeather={0.36}
         safeRichness={0.4}
       />
       {/* Match the section colour exactly at the seam. The bottom is already
