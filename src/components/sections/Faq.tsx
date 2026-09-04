@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
-import p1 from '../../assets/cases/besix.webp'
-import p2 from '../../assets/case/carousel-2-boardroom.webp'
-import p3 from '../../assets/process/sunset.webp'
-import p4 from '../../assets/case/carousel-1-workshop.webp'
+import p1 from '../../assets/faq/cards/card1.webp'
+import p2 from '../../assets/faq/cards/card2.webp'
+import p3 from '../../assets/faq/cards/card3.webp'
+import p4 from '../../assets/faq/cards/card4.webp'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
