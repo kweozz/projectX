@@ -22,7 +22,7 @@ export default function Home() {
         <div className="sticky top-0 h-[100svh] overflow-hidden">
           <Hero />
         </div>
-        <div className="relative z-10 overflow-hidden rounded-t-[28px] shadow-[0_-30px_60px_-30px_rgba(0,0,0,0.55)]">
+        <div className="relative z-10 overflow-hidden shadow-[0_-30px_60px_-30px_rgba(0,0,0,0.55)]">
           <Faq />
         </div>
       </div>
