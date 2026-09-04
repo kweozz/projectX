@@ -10,12 +10,11 @@ const ease = [0.22, 1, 0.36, 1] as const
 export default function QuoteBanner() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  // Parallax: the reeded "fractal glass" cave drifts behind the content block.
   const bgY = useTransform(scrollYProgress, [0, 1], ['-12%', '12%'])
-  const contentY = useTransform(scrollYProgress, [0, 1], ['8%', '-8%'])
+  const contentY = useTransform(scrollYProgress, [0, 1], ['7%', '-7%'])
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-ink-900 py-20 md:py-30">
+    <section ref={ref} className="relative overflow-hidden bg-ink-900 py-[80px] md:py-[120px]">
       {/* Background — fractal-glass cave (oversized, parallax) + warm-dark scrim */}
       <motion.img
         src={caveGlass}
@@ -27,36 +26,35 @@ export default function QuoteBanner() {
 
       <motion.div
         style={{ y: contentY }}
-        className="relative mx-auto flex max-w-[1312px] flex-col gap-8 px-6 md:px-16"
+        className="relative mx-auto flex max-w-[1312px] flex-col gap-[40px] px-6 md:gap-[64px] md:px-16"
       >
-        <img src={logo} alt="Allume" className="h-[24px] w-auto" />
+        <img src={logo} alt="Allume" className="h-[28px] w-auto" />
 
-        <div className="flex flex-col items-stretch gap-6 md:gap-9 lg:flex-row">
-          {/* Foreground — light cave image */}
+        {/* Row: light-cave image (flex) + terracotta quote card (347) */}
+        <div className="flex flex-col items-stretch gap-[24px] md:gap-[35px] lg:flex-row">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '0px 0px -15% 0px' }}
             transition={{ duration: 0.7, ease }}
-            className="relative h-[320px] flex-1 overflow-hidden rounded-[10px] md:h-[470px]"
+            className="relative h-[300px] flex-1 overflow-hidden rounded-[10px] md:h-[470px]"
           >
             <img src={caveLight} alt="" className="size-full object-cover" />
           </motion.div>
 
-          {/* Terracotta quote card */}
           <motion.figure
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '0px 0px -15% 0px' }}
             transition={{ duration: 0.7, delay: 0.1, ease }}
-            className="relative flex h-[470px] items-center rounded-[10px] bg-rust p-6 md:p-7 lg:w-[347px] lg:shrink-0"
+            className="relative flex items-center rounded-[10px] bg-rust p-[24px] md:h-[470px] lg:w-[347px] lg:shrink-0"
           >
-            <blockquote className="font-display text-xl font-medium italic leading-[1.6] text-white md:text-2xl">
+            <blockquote className="font-display text-[24px] font-medium italic leading-[38px] text-white">
               &ldquo;Wij helpen Vlaamse bedrijven hun business- en digitale doelstellingen
               tegen 2032 scherp te stellen en vertalen ze naar een roadmap met werven en
               projecten die hun eigen team kan dragen.&rdquo;
             </blockquote>
-            <QuoteMark className="absolute bottom-6 right-6 h-10 w-9 text-white" />
+            <QuoteMark className="absolute bottom-6 right-6 h-[49px] w-[48px] text-white" />
           </motion.figure>
         </div>
       </motion.div>
