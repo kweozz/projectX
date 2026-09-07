@@ -75,9 +75,11 @@ function BlockCard({
 }) {
   const isDesktop = useIsDesktop()
   const isLast = index === total - 1
-  // The covered card dims as the next one stacks over it (opacity only — no
-  // scale, so no edge sliver).
-  const opacity = useTransform(progress, [index / total, (index + 1) / total], [1, 0.5])
+  // Dim ONLY in the short window just before the next card finishes covering
+  // this one — so this card stays fully opaque while IT is the top card (no
+  // two half-transparent cards blending). Opacity only, so no edge sliver.
+  const cover = (index + 1) / total
+  const opacity = useTransform(progress, [cover - 0.16, cover], [1, 0.5])
   const style = isDesktop && !isLast ? { opacity } : undefined
 
   const image = (
