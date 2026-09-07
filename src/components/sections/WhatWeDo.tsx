@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { motion } from 'framer-motion'
 import keuzes from '../../assets/transform/keuzes.webp'
 import advies from '../../assets/transform/advies.webp'
 import begeleiding from '../../assets/transform/begeleiding.webp'
+
+const ease = [0.22, 1, 0.36, 1] as const
 
 type Block = {
   title: string
@@ -15,8 +16,8 @@ type Block = {
 }
 
 // "We helpen bedrijven gericht transformeren" — Figma Layout Variation 4
-// (1019:21981). Full-bleed split cards (image 60% / panel 40%), colours
-// #d33414 / #210b03 / #f9f6f1, that sticky-stack over one another on scroll.
+// (1019:21981): centred intro on ink-900, then 3 full-bleed split cards
+// (image 60% / panel 40%, h-500, gap-64), colours #d33414 / #210b03 / #f9f6f1.
 const BLOCKS: Block[] = [
   {
     title: 'Van ambitie naar duidelijke keuzes.',
@@ -46,37 +47,7 @@ const BLOCKS: Block[] = [
   },
 ]
 
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)')
-    const update = () => setIsDesktop(mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
-  return isDesktop
-}
-
-function BlockCard({
-  b,
-  index,
-  total,
-  progress,
-}: {
-  b: Block
-  index: number
-  total: number
-  progress: MotionValue<number>
-}) {
-  const isDesktop = useIsDesktop()
-  const isLast = index === total - 1
-  const start = index / total
-  const end = (index + 1) / total
-  // Only scale the covered card (kept fully opaque so it never shows through).
-  const scale = useTransform(progress, [start, end], [1, 0.95])
-  const style = isDesktop && !isLast ? { scale } : undefined
-
+function Card({ b }: { b: Block }) {
   const image = (
     <div className="h-56 w-full shrink-0 overflow-hidden sm:h-72 lg:h-full lg:w-[60%]">
       <img
@@ -96,60 +67,55 @@ function BlockCard({
     </div>
   )
 
-  // Each card is full-bleed and pins to the top; the next scales/fades in over it.
   return (
-    <div className="relative lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center" style={{ zIndex: index + 1 }}>
-      <motion.div
-        style={style}
-        className={`flex w-full overflow-hidden lg:h-[560px] lg:flex-row lg:items-stretch ${b.bg} ${
-          b.reverse ? 'flex-col-reverse' : 'flex-col'
-        }`}
-      >
-        {b.reverse ? (
-          <>
-            {panel}
-            {image}
-          </>
-        ) : (
-          <>
-            {image}
-            {panel}
-          </>
-        )}
-      </motion.div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -15% 0px' }}
+      transition={{ duration: 0.7, ease }}
+      className={`flex w-full overflow-hidden lg:h-[500px] lg:flex-row lg:items-stretch ${b.bg} ${
+        b.reverse ? 'flex-col-reverse' : 'flex-col'
+      }`}
+    >
+      {b.reverse ? (
+        <>
+          {panel}
+          {image}
+        </>
+      ) : (
+        <>
+          {image}
+          {panel}
+        </>
+      )}
+    </motion.div>
   )
 }
 
 export default function WhatWeDo() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
-
   return (
-    <section id="wat-wij-doen" className="bg-ink-900 pt-20 md:pt-30">
-      {/* Intro (keeps the page gutter) */}
-      <div className="mx-auto max-w-[1440px] px-6 pb-12 md:px-16 md:pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '0px 0px -20% 0px' }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col gap-6"
-        >
-          <h2 className="max-w-[1100px] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-white">
-            We helpen bedrijven gericht transformeren.
-          </h2>
-          <p className="max-w-[900px] font-display text-lg leading-[1.5] text-[#d6d3d1] md:text-2xl">
-            Van strategie en bedrijfsvoering tot processen, data en technologie. We brengen
-            alles samen in één plan en begeleiden de uitvoering — onafhankelijk van leveranciers.
-          </p>
-        </motion.div>
-      </div>
+    <section id="wat-wij-doen" className="bg-ink-900 py-20 md:py-30">
+      {/* Intro — centred (Figma 1019:21983) */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '0px 0px -20% 0px' }}
+        transition={{ duration: 0.7, ease }}
+        className="mx-auto mb-12 flex max-w-[1440px] flex-col items-center gap-6 px-6 text-center md:mb-16 md:px-16"
+      >
+        <h2 className="max-w-[1100px] font-display text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-white">
+          We helpen bedrijven gericht transformeren.
+        </h2>
+        <p className="max-w-[900px] font-display text-lg leading-[1.5] text-[#d6d3d1] md:text-2xl">
+          Van strategie en bedrijfsvoering tot processen, data en technologie. We brengen
+          alles samen in één plan en begeleiden de uitvoering — onafhankelijk van leveranciers.
+        </p>
+      </motion.div>
 
-      {/* Full-bleed sticky-stacking split cards */}
-      <div ref={ref} className="relative pb-20 md:pb-0">
-        {BLOCKS.map((b, i) => (
-          <BlockCard key={b.title} b={b} index={i} total={BLOCKS.length} progress={scrollYProgress} />
+      {/* Full-bleed split cards, gap-64 */}
+      <div className="flex flex-col gap-12 md:gap-16">
+        {BLOCKS.map((b) => (
+          <Card key={b.title} b={b} />
         ))}
       </div>
     </section>
