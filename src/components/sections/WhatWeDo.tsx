@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 import keuzes from '../../assets/transform/keuzes.webp'
 import advies from '../../assets/transform/advies.webp'
 import begeleiding from '../../assets/transform/begeleiding.webp'
@@ -49,7 +50,36 @@ const BLOCKS: Block[] = [
   },
 ]
 
-function BlockCard({ b, index }: { b: Block; index: number }) {
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const update = () => setIsDesktop(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  return isDesktop
+}
+
+function BlockCard({
+  b,
+  index,
+  total,
+  progress,
+}: {
+  b: Block
+  index: number
+  total: number
+  progress: MotionValue<number>
+}) {
+  const isDesktop = useIsDesktop()
+  const isLast = index === total - 1
+  // The covered card dims as the next one stacks over it (opacity only — no
+  // scale, so no edge sliver).
+  const opacity = useTransform(progress, [index / total, (index + 1) / total], [1, 0.5])
+  const style = isDesktop && !isLast ? { opacity } : undefined
+
   const image = (
     <div className="h-56 w-full shrink-0 overflow-hidden sm:h-72 lg:h-full lg:w-[60%]">
       <img
@@ -73,7 +103,8 @@ function BlockCard({ b, index }: { b: Block; index: number }) {
   // via z-index (pure CSS sticky — no transform, so no edge line).
   return (
     <div className="relative lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center" style={{ zIndex: index + 1 }}>
-      <div
+      <motion.div
+        style={style}
         className={`flex w-full overflow-hidden lg:h-[500px] lg:flex-row lg:items-stretch ${b.bg} ${
           b.reverse ? 'flex-col-reverse' : 'flex-col'
         }`}
@@ -89,12 +120,15 @@ function BlockCard({ b, index }: { b: Block; index: number }) {
             {panel}
           </>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }
 
 export default function WhatWeDo() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
+
   return (
     <section id="wat-wij-doen" className="bg-ink-900 pt-20 md:pt-30">
       {/* Intro — centred (Figma 1019:21983) */}
@@ -115,9 +149,9 @@ export default function WhatWeDo() {
       </motion.div>
 
       {/* Full-bleed sticky-stacking split cards */}
-      <div className="relative">
+      <div ref={ref} className="relative">
         {BLOCKS.map((b, i) => (
-          <BlockCard key={b.title} b={b} index={i} />
+          <BlockCard key={b.title} b={b} index={i} total={BLOCKS.length} progress={scrollYProgress} />
         ))}
       </div>
     </section>
