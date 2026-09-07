@@ -1,8 +1,8 @@
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import MaskedText from '../MaskedText'
 import Button from '../Button'
-import heroPhoto from '../../assets/hero/hero-photo.webp'
+import FractalGlass from '../FractalGlass'
+import heroPoster from '../../assets/hero/hero-bg.webp'
 
 const container = {
   hidden: {},
@@ -21,26 +21,32 @@ const item = {
 }
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  // Subtle parallax: the photo drifts a touch slower than the scroll.
-  const photoY = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
-
   return (
-    <section id="top" ref={ref} className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
-      {/* Full-bleed hero photograph (woman with the 2032 report). */}
-      <motion.div style={{ y: photoY }} className="absolute inset-0 -bottom-[12%]">
-        <img
-          src={heroPhoto}
-          alt=""
-          className="size-full scale-105 object-cover object-[70%_center]"
-        />
-      </motion.div>
-
-      {/* Legibility + section blend: soft top shade, strong sink to ink-900 at the
-          bottom so the hero flows straight into the FAQ seam (no visible line). */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(33,11,3,0)_0%,rgba(33,11,3,0.18)_32%,rgba(33,11,3,0.24)_59%,rgb(33,11,3)_100%)]" />
+    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
+      {/* Live fractal-glass shader — terracotta palette built around the brand
+          #d33414, with a warm-tint WCAG-safe zone bottom-left for the type. */}
+      <FractalGlass
+        className="absolute inset-0 size-full"
+        poster={heroPoster}
+        palette="terracotta glow"
+        loopSeconds={14}
+        fluteWidth={30}
+        fluteStrength={340}
+        fluteShine={58}
+        exposure={1.4}
+        warpStrength={0.09}
+        noiseTravel={0.2}
+        bottomFade={0.6}
+        safeZone="bottom-left"
+        safeStyle="warm tint"
+        safeContrast="4.5:1"
+        safeSize={0.3}
+        safeDarkness={0.42}
+        safeFeather={0.36}
+        safeRichness={0.4}
+      />
+      {/* Blend the bottom into the section below (already brown here, so invisible). */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
 
       {/* Hero content — bottom-left */}
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">

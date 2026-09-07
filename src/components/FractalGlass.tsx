@@ -14,6 +14,7 @@ export type FractalPalette =
   | 'golden hour'
   | 'honey'
   | 'terracotta'
+  | 'terracotta glow'
   | 'copper rose'
   | 'desert clay'
 
@@ -52,6 +53,10 @@ const PALETTES: Record<FractalPalette, PaletteDef> = {
     c: [[0.3, 0.13, 0.014], [0.6, 0.32, 0.05], [0.88, 0.6, 0.12], [1.0, 0.82, 0.32], [1.0, 0.96, 0.74]] },
   terracotta: { base: [0.028, 0.01, 0.008], safe: [0.14, 0.072, 0.052], ember: [0.4, 0.2, 0.13],
     c: [[0.3, 0.075, 0.05], [0.62, 0.2, 0.11], [0.86, 0.4, 0.22], [0.96, 0.62, 0.4], [1.0, 0.85, 0.68]] },
+  // Built around the brand terracotta #d33414: deep ink-brown darks → punchy
+  // red-orange terracotta → warm amber/gold highlights.
+  'terracotta glow': { base: [0.03, 0.008, 0.004], safe: [0.15, 0.05, 0.03], ember: [0.55, 0.15, 0.05],
+    c: [[0.36, 0.05, 0.018], [0.78, 0.15, 0.03], [1.0, 0.34, 0.07], [1.0, 0.6, 0.18], [1.0, 0.9, 0.55]] },
   'copper rose': { base: [0.024, 0.007, 0.006], safe: [0.13, 0.055, 0.042], ember: [0.42, 0.17, 0.11],
     c: [[0.36, 0.055, 0.038], [0.7, 0.18, 0.09], [0.92, 0.38, 0.16], [1.0, 0.62, 0.3], [1.0, 0.86, 0.6]] },
   'desert clay': { base: [0.026, 0.016, 0.008], safe: [0.13, 0.09, 0.055], ember: [0.38, 0.25, 0.14],
