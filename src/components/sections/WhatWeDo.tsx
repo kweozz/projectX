@@ -75,12 +75,11 @@ function BlockCard({
 }) {
   const isDesktop = useIsDesktop()
   const isLast = index === total - 1
-  // Dim ONLY in the short window just before the next card finishes covering
-  // this one — so this card stays fully opaque while IT is the top card (no
-  // two half-transparent cards blending). Opacity only, so no edge sliver.
+  // The card itself stays fully OPAQUE (so it can never be seen through). A dark
+  // overlay fades in over it as the next card stacks on top, so the covered card
+  // just dims — no transparency, no blend.
   const cover = (index + 1) / total
-  const opacity = useTransform(progress, [cover - 0.16, cover], [1, 0.5])
-  const style = isDesktop && !isLast ? { opacity } : undefined
+  const dim = useTransform(progress, [cover - 0.22, cover], [0, 0.55])
 
   const image = (
     <div className="h-56 w-full shrink-0 overflow-hidden sm:h-72 lg:h-full lg:w-[60%]">
@@ -105,9 +104,8 @@ function BlockCard({
   // via z-index (pure CSS sticky — no transform, so no edge line).
   return (
     <div className="relative lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center" style={{ zIndex: index + 1 }}>
-      <motion.div
-        style={style}
-        className={`flex w-full overflow-hidden lg:h-[500px] lg:flex-row lg:items-stretch ${b.bg} ${
+      <div
+        className={`relative flex w-full overflow-hidden lg:h-[500px] lg:flex-row lg:items-stretch ${b.bg} ${
           b.reverse ? 'flex-col-reverse' : 'flex-col'
         }`}
       >
@@ -122,7 +120,14 @@ function BlockCard({
             {panel}
           </>
         )}
-      </motion.div>
+        {/* Dark overlay — dims this (opaque) card as the next one covers it. */}
+        {isDesktop && !isLast && (
+          <motion.div
+            style={{ opacity: dim }}
+            className="pointer-events-none absolute inset-0 z-20 hidden bg-ink lg:block"
+          />
+        )}
+      </div>
     </div>
   )
 }
