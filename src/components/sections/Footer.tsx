@@ -55,7 +55,7 @@ export default function Footer() {
         <FractalGlass
           className="absolute inset-0 size-full"
           poster={ctaPoster}
-          palette="golden hour"
+          palette="terracotta glow"
           loopSeconds={14}
           fluteWidth={34}
           fluteStrength={260}

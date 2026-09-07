@@ -5,7 +5,7 @@ import Footer from '../components/sections/Footer'
 import MaskedText from '../components/MaskedText'
 import { ArrowRight } from '../components/icons'
 import Button from '../components/Button'
-import heroBg from '../assets/hero/hero-bg.mp4'
+import FractalGlass from '../components/FractalGlass'
 import heroPoster from '../assets/hero/hero-bg.webp'
 import scanImg from '../assets/services/scan.webp'
 import roadmapImg from '../assets/services/roadmap.webp'
@@ -404,14 +404,18 @@ export default function Diensten() {
 
       {/* Hero (dark, amber video) */}
       <header className="relative flex min-h-[62vh] items-end overflow-hidden bg-ink-900">
-        <video
-          src={heroBg}
+        <FractalGlass
+          className="absolute inset-0 size-full"
           poster={heroPoster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 size-full object-cover"
+          palette="terracotta glow"
+          loopSeconds={14}
+          fluteWidth={30}
+          fluteStrength={340}
+          fluteShine={58}
+          exposure={1.4}
+          warpStrength={0.09}
+          noiseTravel={0.2}
+          bottomFade={0}
         />
         <div className="absolute inset-0 bg-gradient-to-tr from-ink/85 via-ink/40 to-transparent" />
         <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 pb-16 pt-40 md:px-16 md:pb-24">
