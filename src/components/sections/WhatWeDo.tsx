@@ -73,9 +73,9 @@ function BlockCard({
   const isLast = index === total - 1
   const start = index / total
   const end = (index + 1) / total
-  const scale = useTransform(progress, [start, end], [1, 0.92])
-  const opacity = useTransform(progress, [start, end], [1, 0.4])
-  const style = isDesktop && !isLast ? { scale, opacity } : undefined
+  // Only scale the covered card (kept fully opaque so it never shows through).
+  const scale = useTransform(progress, [start, end], [1, 0.95])
+  const style = isDesktop && !isLast ? { scale } : undefined
 
   const image = (
     <div className="h-56 w-full shrink-0 overflow-hidden sm:h-72 lg:h-full lg:w-[60%]">
