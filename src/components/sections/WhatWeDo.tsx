@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { motion } from 'framer-motion'
 import keuzes from '../../assets/transform/keuzes.webp'
 import advies from '../../assets/transform/advies.webp'
 import begeleiding from '../../assets/transform/begeleiding.webp'
@@ -18,8 +17,9 @@ type Block = {
 
 // "We helpen bedrijven gericht transformeren" — Figma Layout Variation 4
 // (1019:21981): centred intro, then full-bleed split cards (image 60% / panel
-// 40%, fixed height, brand colours #d33414 / #210b03 / #f9f6f1) that keep their
-// size and sticky-stack over one another on scroll.
+// 40%, h-500, brand colours #d33414 / #210b03 / #f9f6f1). The cards keep their
+// size and sticky-stack over one another on scroll (pure CSS, no scale — so no
+// edge sliver).
 const BLOCKS: Block[] = [
   {
     title: 'Van ambitie naar duidelijke keuzes.',
@@ -49,37 +49,7 @@ const BLOCKS: Block[] = [
   },
 ]
 
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)')
-    const update = () => setIsDesktop(mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
-  return isDesktop
-}
-
-function BlockCard({
-  b,
-  index,
-  total,
-  progress,
-}: {
-  b: Block
-  index: number
-  total: number
-  progress: MotionValue<number>
-}) {
-  const isDesktop = useIsDesktop()
-  const isLast = index === total - 1
-  const start = index / total
-  const end = (index + 1) / total
-  // Opaque throughout; only a subtle recede as the next card covers it.
-  const scale = useTransform(progress, [start, end], [1, 0.95])
-  const style = isDesktop && !isLast ? { scale } : undefined
-
+function BlockCard({ b, index }: { b: Block; index: number }) {
   const image = (
     <div className="h-56 w-full shrink-0 overflow-hidden sm:h-72 lg:h-full lg:w-[60%]">
       <img
@@ -99,12 +69,11 @@ function BlockCard({
     </div>
   )
 
-  // Card keeps its fixed height (h-500) and is centred in the pinned viewport;
-  // the next card sticky-stacks over it as you scroll.
+  // Fixed-height card, centred in a pinned viewport; later cards stack over it
+  // via z-index (pure CSS sticky — no transform, so no edge line).
   return (
     <div className="relative lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center" style={{ zIndex: index + 1 }}>
-      <motion.div
-        style={style}
+      <div
         className={`flex w-full overflow-hidden lg:h-[500px] lg:flex-row lg:items-stretch ${b.bg} ${
           b.reverse ? 'flex-col-reverse' : 'flex-col'
         }`}
@@ -120,15 +89,12 @@ function BlockCard({
             {panel}
           </>
         )}
-      </motion.div>
+      </div>
     </div>
   )
 }
 
 export default function WhatWeDo() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
-
   return (
     <section id="wat-wij-doen" className="bg-ink-900 pt-20 md:pt-30">
       {/* Intro — centred (Figma 1019:21983) */}
@@ -148,10 +114,10 @@ export default function WhatWeDo() {
         </p>
       </motion.div>
 
-      {/* Full-bleed sticky-stacking split cards (fixed height) */}
-      <div ref={ref} className="relative">
+      {/* Full-bleed sticky-stacking split cards */}
+      <div className="relative">
         {BLOCKS.map((b, i) => (
-          <BlockCard key={b.title} b={b} index={i} total={BLOCKS.length} progress={scrollYProgress} />
+          <BlockCard key={b.title} b={b} index={i} />
         ))}
       </div>
     </section>
