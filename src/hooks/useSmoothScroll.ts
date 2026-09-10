@@ -16,9 +16,13 @@ export function useSmoothScroll() {
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    // `lerp` (frame-based) tracks the wheel directly instead of running a
+    // ~1s duration timer per scroll, so it feels snappy up front — no heavy,
+    // "log" inertia trailing behind (especially over the pinned hero) — while
+    // still keeping the momentum smooth.
     const l = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.14,
+      wheelMultiplier: 1.05,
     })
     lenis = l
 

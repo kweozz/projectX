@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Button from './Button'
@@ -13,19 +13,34 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  // Auto-hide: reveal on scroll up, hide on scroll down (always visible at top).
+  const [hidden, setHidden] = useState(false)
+  const lastY = useRef(0)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 24)
+      const diff = y - lastY.current
+      // Ignore tiny jitter; keep the bar shown near the very top.
+      if (Math.abs(diff) > 6) {
+        setHidden(diff > 0 && y > 96)
+        lastY.current = y
+      }
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // While the mobile menu is open, keep the bar pinned regardless of direction.
+  const isHidden = hidden && !open
+
   return (
     <motion.header
       initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      animate={{ y: isHidden ? '-100%' : 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed inset-x-0 top-0 z-50 bg-rust transition-shadow duration-300 ${
         scrolled || open ? 'shadow-[0_2px_24px_-10px_rgba(0,0,0,0.5)]' : ''
       }`}
