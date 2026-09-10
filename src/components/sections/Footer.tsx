@@ -125,10 +125,13 @@ export default function Footer() {
                   <p className="font-display text-sm font-medium uppercase tracking-[0.07em] text-white">
                     {col.title}
                   </p>
-                  <ul className="flex flex-col gap-3 font-display text-sm text-[#e2e0db]">
+                  <ul className="flex flex-col gap-1 font-display text-sm text-[#e2e0db]">
                     {col.links.map((link) => (
                       <li key={link.label}>
-                        <a href={link.href} className="transition-colors hover:text-white">
+                        <a
+                          href={link.href}
+                          className="-mx-2 inline-block rounded px-2 py-2 transition-colors hover:text-white"
+                        >
                           {link.label}
                         </a>
                       </li>
@@ -153,7 +156,7 @@ export default function Footer() {
                   key={social.label}
                   href="#"
                   aria-label={social.label}
-                  className="flex size-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                  className="flex size-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
                 >
                   <img
                     src={social.icon}

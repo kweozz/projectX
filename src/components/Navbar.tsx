@@ -76,13 +76,13 @@ export default function Navbar() {
           </Button>
         </div>
 
-        {/* Mobile toggle */}
+        {/* Mobile toggle — 44px tap target (Apple/Google minimum) */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-label="Menu"
           aria-expanded={open}
-          className="flex size-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="-mr-2 flex size-11 flex-col items-center justify-center gap-1.5 md:hidden"
         >
           <span
             className={`h-0.5 w-6 bg-cream transition-transform duration-300 ${open ? 'translate-y-2 rotate-45' : ''}`}
@@ -94,13 +94,13 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — each row is a full-width 48px tap target with a divider */}
       {open && (
         <motion.div
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="flex flex-col gap-4 overflow-hidden px-6 pb-6 pt-2 md:hidden"
+          className="flex flex-col overflow-hidden px-6 pb-6 pt-2 md:hidden"
         >
           {NAV_LINKS.map((link) =>
             link.route ? (
@@ -108,7 +108,7 @@ export default function Navbar() {
                 key={link.label}
                 to={link.href}
                 onClick={() => setOpen(false)}
-                className="font-display text-lg font-medium text-white/90"
+                className="border-t border-white/15 py-3.5 font-display text-lg font-medium text-white/90 transition-colors active:text-white"
               >
                 {link.label}
               </Link>
@@ -117,7 +117,7 @@ export default function Navbar() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="font-display text-lg font-medium text-white/90"
+                className="border-t border-white/15 py-3.5 font-display text-lg font-medium text-white/90 transition-colors active:text-white"
               >
                 {link.label}
               </a>
@@ -131,6 +131,7 @@ export default function Navbar() {
             icon
             arrow="up-right"
             onClick={() => setOpen(false)}
+            className="mt-5 w-full justify-center"
           >
             Contacteer ons
           </Button>

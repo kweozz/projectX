@@ -16,13 +16,15 @@ const QUESTIONS: Q[] = [
   { pre: 'We groeien, maar de ', hi: 'marge groeit niet mee.', post: ' Waar lekt het?' },
 ]
 
-// Cards: 336×420 (Figma 976:15791). left/top as exact px within the 1312 content
-// row; the SECTION (full width) clips only their bottoms — never left/right/top.
+// Cards: 336×420 (Figma 976:15791). left as % across the row; top as % of the
+// row height so the stagger scales with the container on every breakpoint
+// (fixed px offsets looked disconnected next to the small mobile cards). The
+// SECTION (full width) clips only their bottoms — never left/right/top.
 const cards = [
-  { src: p1, left: '0%', top: 0, rot: -8, z: 10 },
-  { src: p2, left: '20.05%', top: 97, rot: 4, z: 30 },
-  { src: p3, left: '44.66%', top: 41, rot: -3, z: 20 },
-  { src: p4, left: '63.64%', top: 104, rot: 6, z: 10 },
+  { src: p1, left: '0%', top: '0%', rot: -8, z: 10 },
+  { src: p2, left: '20.05%', top: '28.5%', rot: 4, z: 30 },
+  { src: p3, left: '44.66%', top: '12%', rot: -3, z: 20 },
+  { src: p4, left: '63.64%', top: '30.6%', rot: 6, z: 10 },
 ]
 
 export default function Faq() {

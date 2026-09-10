@@ -76,7 +76,7 @@ export default function Hero() {
             <Button variant="primary" surface="dark" size="sm" to="/contact">
               Plan een gesprek
             </Button>
-            <Button variant="tertiary" surface="dark" size="sm" to="/contact" icon arrow="up-right">
+            <Button variant="tertiary" surface="dark" size="sm" to="/contact" icon arrow="up-right" className="py-2">
               Of begin met de 2032-zelfscan
             </Button>
           </motion.div>
