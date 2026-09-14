@@ -32,8 +32,9 @@ vec3 samp(float x, float y){
 void main(){
   vec2 fc = gl_FragCoord.xy / uDpr;
 
-  // Gentle ribble: the whole rib pattern sways a little over time.
-  float sway = sin(uTime * 0.5 + fc.y * 0.004) * uSway;
+  // Gentle ribble: the whole rib pattern drifts a little over time (kept
+  // perfectly vertical — no y term — for a clean, editorial look).
+  float sway = sin(uTime * 0.4) * uSway;
   float c = fract((fc.x + sway) / uFluteWidth) - 0.5;    // -0.5..0.5 within rib
   float refr = sin(c * PI);                                // smooth cylindrical lens
   float off = refr * uAmp;
