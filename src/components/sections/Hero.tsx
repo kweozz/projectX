@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import MaskedText from '../MaskedText'
 import Button from '../Button'
 import FractalGlass from '../FractalGlass'
+import FlutedImage from '../FlutedImage'
 import heroPoster from '../../assets/hero/hero-bg.webp'
 import heroImage from '../../assets/hero/hero-facade.webp'
 
@@ -21,30 +22,10 @@ const item = {
   },
 }
 
-// One 24px period of a triangle wave in the RED channel (green pinned at 128 so
-// there's no vertical wobble). feTile repeats it; feDisplacementMap uses it to
-// physically refract the photo in vertical ribs → real fluted / reeded glass.
-const STRIPE_TILE =
-  'data:image/svg+xml,' +
-  encodeURIComponent(
-    "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'>" +
-      "<defs><linearGradient id='s' x1='0' y1='0' x2='24' y2='0' gradientUnits='userSpaceOnUse'>" +
-      "<stop offset='0' stop-color='#008000'/><stop offset='0.5' stop-color='#ff8000'/>" +
-      "<stop offset='1' stop-color='#008000'/></linearGradient></defs>" +
-      "<rect width='24' height='24' fill='url(#s)'/></svg>",
-  )
-
-// Highlight/shadow per rib — the "depth" that sells the glass (subtle, aligned
-// to the 24px displacement period).
-const RIB_SHADING =
-  'repeating-linear-gradient(90deg,' +
-  'rgba(255,255,255,0.16) 0px, rgba(255,255,255,0) 5px,' +
-  'rgba(0,0,0,0.18) 12px, rgba(255,255,255,0) 19px,' +
-  'rgba(255,255,255,0.16) 24px)'
-
 // Two background treatments, both on the "clean ink → …" idea:
 //  • 'photo' — the ink colour flows cleanly into the sharp facade photo seen
-//    through fluted/ribbed glass (real refraction + rib shading for depth).
+//    through crisp WebGL fluted glass (FlutedImage — same lens idea as the
+//    shader, so it stays razor-sharp).
 //  • 'glass' — the ink colour flows into the fluted-glass shader, no photo.
 export type HeroVariant = 'photo' | 'glass'
 
@@ -54,28 +35,6 @@ export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
 
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Hidden SVG: the fluted-glass refraction filter. */}
-      <svg aria-hidden width="0" height="0" className="absolute">
-        <filter
-          id="heroFluted"
-          x="-2%"
-          y="-2%"
-          width="104%"
-          height="104%"
-          colorInterpolationFilters="sRGB"
-        >
-          <feImage href={STRIPE_TILE} x="0" y="0" width="24" height="24" result="tile" />
-          <feTile in="tile" result="map" />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="map"
-            scale="16"
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </svg>
-
       {variant === 'glass' ? (
         /* Fractal glass — clean, fades in from the ink on the left. */
         <div
@@ -97,21 +56,21 @@ export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
           />
         </div>
       ) : (
-        /* Photo behind fluted glass — the ink dissolves cleanly into it. */
+        /* Photo behind crisp WebGL fluted glass — the ink dissolves cleanly
+           into it (real per-pixel lens refraction, stays sharp). */
         <div
           className="pointer-events-none absolute inset-0"
           style={{ maskImage: revealMask, WebkitMaskImage: revealMask }}
         >
-          <img
+          <FlutedImage
             src={heroImage}
-            alt=""
-            style={{ objectPosition: '60% 50%', filter: 'url(#heroFluted)' }}
-            className="absolute inset-0 size-full scale-105 object-cover"
-          />
-          {/* Rib shading for depth (glossy highlight + valley shadow per rib). */}
-          <div
-            className="absolute inset-0 mix-blend-overlay"
-            style={{ backgroundImage: RIB_SHADING }}
+            className="absolute inset-0 size-full"
+            fluteWidth={26}
+            magnify={2.3}
+            edge={0.26}
+            shine={0.1}
+            objectPositionX={0.6}
+            objectPositionY={0.5}
           />
         </div>
       )}
