@@ -69,20 +69,21 @@ export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
             <FlutedImage
               src={heroImage}
               className="absolute inset-0 size-full"
-              fluteWidth={12}
-              amp={22}
-              edge={0.18}
-              shine={0.1}
-              streak={10}
-              chroma={0.06}
-              sweep={0.06}
+              fluteWidth={32}
+              amp={12}
+              edge={0.16}
+              shine={0.09}
+              streak={110}
+              chroma={0.04}
+              sweep={0.05}
+              fadeStart={0}
+              fadeEnd={0.55}
               objectPositionX={0.62}
-              objectPositionY={0.5}
+              objectPositionY={0.52}
             />
           </div>
-          {/* Melt the streaks into the cream at the top and bottom. */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-cream to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-cream to-transparent" />
+          {/* Melt the very bottom into the cream. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-cream to-transparent" />
         </>
       )}
 
