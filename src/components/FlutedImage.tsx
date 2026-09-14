@@ -17,6 +17,7 @@ uniform float uFluteWidth; // rib width in CSS px
 uniform float uMagnify;    // lens strength (1 = none)
 uniform float uEdge;       // 0..1 darkening toward each rib edge (depth)
 uniform float uShine;      // 0..1 highlight along each rib crown
+uniform float uStreak;     // vertical smear in CSS px (the "melt")
 uniform vec2 uFocus;       // object-position, 0..1
 
 void main(){
@@ -30,10 +31,18 @@ void main(){
   float scale = max(uRes.x / uImgRes.x, uRes.y / uImgRes.y);
   vec2 disp = uImgRes * scale;                  // displayed image size
   vec2 offset = (uRes - disp) * uFocus;         // top-left offset (focus)
-  vec2 uv = (vec2(sampleX, fc.y) - offset) / disp;
-  uv = clamp(uv, 0.0, 1.0);
 
-  vec3 col = texture2D(uImg, vec2(uv.x, 1.0 - uv.y)).rgb;
+  // Vertical smear: average a few samples along y so the photo melts into
+  // soft vertical streaks (like looking through tall reeded glass).
+  vec3 col = vec3(0.0);
+  const int N = 7;
+  for (int i = 0; i < N; i++) {
+    float o = (float(i) / float(N - 1) - 0.5) * uStreak;
+    vec2 uv = (vec2(sampleX, fc.y + o) - offset) / disp;
+    uv = clamp(uv, 0.0, 1.0);
+    col += texture2D(uImg, vec2(uv.x, 1.0 - uv.y)).rgb;
+  }
+  col /= float(N);
 
   // Depth: darken toward rib edges, a thin bright crown at the centre.
   float e = abs(t) * 2.0;                        // 0 centre → 1 edge
@@ -50,6 +59,7 @@ export interface FlutedImageProps {
   magnify?: number
   edge?: number
   shine?: number
+  streak?: number
   objectPositionX?: number
   objectPositionY?: number
 }
@@ -61,13 +71,14 @@ export default function FlutedImage({
   magnify = 2.3,
   edge = 0.26,
   shine = 0.1,
+  streak = 0,
   objectPositionX = 0.6,
   objectPositionY = 0.5,
 }: FlutedImageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [failed, setFailed] = useState(false)
-  const props = useRef({ fluteWidth, magnify, edge, shine, objectPositionX, objectPositionY })
-  props.current = { fluteWidth, magnify, edge, shine, objectPositionX, objectPositionY }
+  const props = useRef({ fluteWidth, magnify, edge, shine, streak, objectPositionX, objectPositionY })
+  props.current = { fluteWidth, magnify, edge, shine, streak, objectPositionX, objectPositionY }
 
   useEffect(() => {
     const cv = canvasRef.current
@@ -98,7 +109,7 @@ export default function FlutedImage({
     const U = (n: string) => gl.getUniformLocation(pr, n)
     const u = {
       res: U('uRes'), imgRes: U('uImgRes'), dpr: U('uDpr'), img: U('uImg'),
-      fw: U('uFluteWidth'), mag: U('uMagnify'), edge: U('uEdge'), shine: U('uShine'), focus: U('uFocus'),
+      fw: U('uFluteWidth'), mag: U('uMagnify'), edge: U('uEdge'), shine: U('uShine'), streak: U('uStreak'), focus: U('uFocus'),
     }
 
     const tex = gl.createTexture()
@@ -125,6 +136,7 @@ export default function FlutedImage({
       gl.uniform1f(u.mag, p.magnify)
       gl.uniform1f(u.edge, p.edge)
       gl.uniform1f(u.shine, p.shine)
+      gl.uniform1f(u.streak, p.streak)
       gl.uniform2f(u.focus, p.objectPositionX, p.objectPositionY)
       gl.uniform1i(u.img, 0)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
