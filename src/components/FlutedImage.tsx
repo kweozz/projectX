@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
-// "Drip into strands" fluted glass (WebGL, sharp). The photo stays intact and
-// rich across most of the frame, then breaks into fine vertical strands that
-// stretch out and dissolve into the background colour (ink) with gaps between
-// them — like the reference. Opaque and colour-boosted, so nothing looks washed.
+// Fluted / reeded glass over a photo (WebGL, sharp). A per-rib cylindrical lens
+// (smooth sine refraction) with a bright crown highlight, valley shadow and
+// chromatic dispersion for real depth, plus a gentle animation: the ribs sway
+// a touch and a soft highlight sweeps across, so the glass feels alive. Opaque
+// and colour-boosted, so the photo stays rich.
 
 const VERT = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`
 
@@ -12,53 +13,54 @@ precision highp float;
 uniform vec2 uRes, uImgRes;
 uniform float uDpr;
 uniform sampler2D uImg;
-uniform float uFluteWidth;   // strand width, CSS px
-uniform float uMeltEnd;      // ny where strands resolve into the intact photo
-uniform float uThin;         // strand thickness at full dissolve (0..1 of a cell)
-uniform float uSeedJitter;   // per-strand randomness of the melt line
-uniform float uSat, uContrast;
-uniform vec3 uInk;           // background colour the strands dissolve into
+uniform float uFluteWidth, uAmp, uEdge, uShine, uChroma;
+uniform float uSat, uContrast, uSway, uSweep, uTime;
 uniform vec2 uFocus;
+#define PI 3.14159265
 
-float hash(float n){ return fract(sin(n * 127.1) * 43758.5453); }
 vec2 coverUV(vec2 px){
   float s = max(uRes.x / uImgRes.x, uRes.y / uImgRes.y);
   vec2 d = uImgRes * s;
   vec2 o = (uRes - d) * uFocus;
   return (px - o) / d;
 }
-vec3 sampNy(float x, float ny){
-  float sy = (1.0 - ny) * uRes.y;
-  vec2 uv = clamp(coverUV(vec2(x, sy)), 0.0, 1.0);
+vec3 samp(float x, float y){
+  vec2 uv = clamp(coverUV(vec2(x, y)), 0.0, 1.0);
   return texture2D(uImg, vec2(uv.x, 1.0 - uv.y)).rgb;
 }
 
 void main(){
   vec2 fc = gl_FragCoord.xy / uDpr;
-  float ny = 1.0 - fc.y / uRes.y;                 // 0 top → 1 bottom
 
-  float idx = floor(fc.x / uFluteWidth);
-  float cell = fract(fc.x / uFluteWidth);
-  float meltEnd = uMeltEnd + (hash(idx) - 0.5) * uSeedJitter;
+  // Gentle ribble: the whole rib pattern sways a little over time.
+  float sway = sin(uTime * 0.5 + fc.y * 0.004) * uSway;
+  float c = fract((fc.x + sway) / uFluteWidth) - 0.5;    // -0.5..0.5 within rib
+  float refr = sin(c * PI);                                // smooth cylindrical lens
+  float off = refr * uAmp;
 
-  // s: 1 at the very top (full strands) → 0 at meltEnd (intact photo below).
-  float s = 1.0 - smoothstep(0.0, meltEnd, ny);
+  // Refraction + chromatic dispersion.
+  vec3 col;
+  col.r = samp(fc.x + off * (1.0 + uChroma), fc.y).r;
+  col.g = samp(fc.x + off,                    fc.y).g;
+  col.b = samp(fc.x + off * (1.0 - uChroma), fc.y).b;
 
-  // Strand thickness: thin near the top with big ink gaps, full lower down.
-  float bar = mix(1.0, uThin, s);
-  float cov = 1.0 - smoothstep(bar, bar + 0.03, cell);
+  // Depth: valley shadow at rib seams + a specular crown highlight at the ridge.
+  float valley = pow(abs(refr), 1.3);
+  col *= 1.0 - uEdge * valley;
+  float crown = pow(max(cos(c * PI), 0.0), 4.0);
+  col += uShine * crown;
 
-  // Strands stretch the melt-line row upward; intact photo keeps its own row.
-  float srcNy = mix(ny, meltEnd, s);
-  vec3 img = sampNy(fc.x, srcNy);
+  // A soft highlight sweeping across → living glass with extra depth.
+  if (uSweep > 0.001){
+    float sx = (0.5 + 0.5 * sin(uTime * 0.28)) * uRes.x;
+    float d = (fc.x - sx) / (uRes.x * 0.14);
+    col += uSweep * exp(-d * d) * (0.35 + crown);
+  }
 
   // Richness.
-  img = (img - 0.5) * uContrast + 0.5;
-  float l = dot(img, vec3(0.2126, 0.7152, 0.0722));
-  img = mix(vec3(l), img, uSat);
-
-  float alpha = s <= 0.001 ? 1.0 : cov;
-  vec3 col = mix(uInk, img, alpha);
+  col = (col - 0.5) * uContrast + 0.5;
+  float l = dot(col, vec3(0.2126, 0.7152, 0.0722));
+  col = mix(vec3(l), col, uSat);
 
   gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
 }`
@@ -67,12 +69,15 @@ export interface FlutedImageProps {
   src: string
   className?: string
   fluteWidth?: number
-  meltEnd?: number
-  thin?: number
-  seedJitter?: number
+  amp?: number
+  edge?: number
+  shine?: number
+  chroma?: number
   sat?: number
   contrast?: number
-  ink?: [number, number, number]
+  sway?: number
+  sweep?: number
+  animate?: boolean
   objectPositionX?: number
   objectPositionY?: number
 }
@@ -80,20 +85,23 @@ export interface FlutedImageProps {
 export default function FlutedImage({
   src,
   className = '',
-  fluteWidth = 8,
-  meltEnd = 0.45,
-  thin = 0.2,
-  seedJitter = 0.12,
-  sat = 1.14,
-  contrast = 1.09,
-  ink = [0.082, 0.02, 0.0],
+  fluteWidth = 26,
+  amp = 14,
+  edge = 0.28,
+  shine = 0.16,
+  chroma = 0.05,
+  sat = 1.1,
+  contrast = 1.06,
+  sway = 3,
+  sweep = 0.08,
+  animate = true,
   objectPositionX = 0.55,
   objectPositionY = 0.5,
 }: FlutedImageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [failed, setFailed] = useState(false)
-  const p = useRef({ fluteWidth, meltEnd, thin, seedJitter, sat, contrast, ink, objectPositionX, objectPositionY })
-  p.current = { fluteWidth, meltEnd, thin, seedJitter, sat, contrast, ink, objectPositionX, objectPositionY }
+  const p = useRef({ fluteWidth, amp, edge, shine, chroma, sat, contrast, sway, sweep, animate, objectPositionX, objectPositionY })
+  p.current = { fluteWidth, amp, edge, shine, chroma, sat, contrast, sway, sweep, animate, objectPositionX, objectPositionY }
 
   useEffect(() => {
     const cv = canvasRef.current
@@ -124,8 +132,8 @@ export default function FlutedImage({
     const U = (n: string) => gl.getUniformLocation(pr, n)
     const u = {
       res: U('uRes'), imgRes: U('uImgRes'), dpr: U('uDpr'), img: U('uImg'),
-      fw: U('uFluteWidth'), me: U('uMeltEnd'), thin: U('uThin'), jit: U('uSeedJitter'),
-      sat: U('uSat'), contrast: U('uContrast'), ink: U('uInk'), focus: U('uFocus'),
+      fw: U('uFluteWidth'), amp: U('uAmp'), edge: U('uEdge'), shine: U('uShine'), chroma: U('uChroma'),
+      sat: U('uSat'), contrast: U('uContrast'), sway: U('uSway'), sweep: U('uSweep'), time: U('uTime'), focus: U('uFocus'),
     }
 
     const tex = gl.createTexture()
@@ -134,30 +142,45 @@ export default function FlutedImage({
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([20, 8, 4, 255]))
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([250, 248, 245, 255]))
 
     let imgW = 1, imgH = 1, ready = false
 
-    const draw = () => {
+    const draw = (clock: number) => {
       const c = p.current
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      cv.width = Math.max(1, Math.round(cv.clientWidth * dpr))
-      cv.height = Math.max(1, Math.round(cv.clientHeight * dpr))
-      gl.viewport(0, 0, cv.width, cv.height)
+      if (cv.width !== Math.round(cv.clientWidth * dpr) || cv.height !== Math.round(cv.clientHeight * dpr)) {
+        cv.width = Math.max(1, Math.round(cv.clientWidth * dpr))
+        cv.height = Math.max(1, Math.round(cv.clientHeight * dpr))
+        gl.viewport(0, 0, cv.width, cv.height)
+      }
       gl.uniform2f(u.res, cv.clientWidth, cv.clientHeight)
       gl.uniform2f(u.imgRes, imgW, imgH)
       gl.uniform1f(u.dpr, dpr)
       gl.uniform1f(u.fw, c.fluteWidth)
-      gl.uniform1f(u.me, c.meltEnd)
-      gl.uniform1f(u.thin, c.thin)
-      gl.uniform1f(u.jit, c.seedJitter)
+      gl.uniform1f(u.amp, c.amp)
+      gl.uniform1f(u.edge, c.edge)
+      gl.uniform1f(u.shine, c.shine)
+      gl.uniform1f(u.chroma, c.chroma)
       gl.uniform1f(u.sat, c.sat)
       gl.uniform1f(u.contrast, c.contrast)
-      gl.uniform3f(u.ink, c.ink[0], c.ink[1], c.ink[2])
+      gl.uniform1f(u.sway, c.sway)
+      gl.uniform1f(u.sweep, c.sweep)
+      gl.uniform1f(u.time, clock)
       gl.uniform2f(u.focus, c.objectPositionX, c.objectPositionY)
       gl.uniform1i(u.img, 0)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let raf = 0, last = performance.now(), clock = 0, visible = true
+    const frame = (now: number) => {
+      clock += Math.min((now - last) / 1000, 0.1); last = now
+      draw(clock)
+      raf = requestAnimationFrame(frame)
+    }
+    const start = () => { if (!raf && ready && p.current.animate && !reduced) { last = performance.now(); raf = requestAnimationFrame(frame) } }
+    const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0 } }
 
     const img = new Image()
     img.crossOrigin = 'anonymous'
@@ -165,16 +188,18 @@ export default function FlutedImage({
       imgW = img.naturalWidth; imgH = img.naturalHeight; ready = true
       gl.bindTexture(gl.TEXTURE_2D, tex)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
-      draw()
+      draw(0)
+      start()
     }
     img.onerror = () => setFailed(true)
     img.src = src
 
-    const onResize = () => { if (ready) draw() }
+    const onResize = () => { if (ready) draw(clock) }
     window.addEventListener('resize', onResize)
-    draw()
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : stop() }, { threshold: 0 })
+    io.observe(cv)
 
-    return () => { window.removeEventListener('resize', onResize); gl.deleteTexture(tex) }
+    return () => { io.disconnect(); stop(); window.removeEventListener('resize', onResize); gl.deleteTexture(tex) }
   }, [src])
 
   if (failed) return <img src={src} alt="" className={className} aria-hidden />
