@@ -15,9 +15,6 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
 }
 
-// What Allume does, in three beats — turns the hero from a mood into a message.
-const VALUES = ['Onafhankelijk van leveranciers', 'Becijferd, niet op buikgevoel', 'Van plan tot uitvoering']
-
 // 'glass' (default) — the live fractal-glass hero. 'photo' — the fluted photo
 // experiment, kept as an option.
 export type HeroVariant = 'photo' | 'glass'
@@ -66,29 +63,20 @@ export default function Hero({ variant = 'glass' }: { variant?: HeroVariant }) {
 
       {/* Hero content — bottom-left */}
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">
-        <motion.div variants={container} initial="hidden" animate="show" className="flex max-w-3xl flex-col gap-7">
-          {/* Kicker */}
-          <motion.p
-            variants={item}
-            className="font-display text-sm font-medium uppercase tracking-[0.18em] text-white/70"
-          >
-            Strategisch advies voor Vlaamse kmo&apos;s
-          </motion.p>
-
+        <motion.div variants={container} initial="hidden" animate="show" className="flex max-w-3xl flex-col gap-8">
           <div className="flex flex-col gap-6">
             <motion.h1
               variants={item}
-              className="max-w-[820px] font-display text-[clamp(2.5rem,6vw,4.25rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-white"
+              className="max-w-[720px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.2] tracking-[-0.019em] text-white"
             >
               <MaskedText onMount>Waar staat uw bedrijf in 2032?</MaskedText>
             </motion.h1>
             <motion.p
               variants={item}
-              className="max-w-[640px] font-display text-lg leading-[1.4] text-white/90 md:text-2xl"
+              className="max-w-xl font-display text-lg leading-[1.34] text-white/90 md:text-2xl"
             >
-              Wij vertalen uw ambities naar een becijferde roadmap — van strategie en
-              processen tot data en technologie. Onafhankelijk van leveranciers, gedragen
-              door uw eigen team.
+              Strategisch advies voor Vlaamse kmo&apos;s op business en digitaal vlak.
+              Gedragen door heel uw team, geleid door u en uw cijfers.
             </motion.p>
           </div>
 
@@ -100,19 +88,6 @@ export default function Hero({ variant = 'glass' }: { variant?: HeroVariant }) {
               Of begin met de 2032-zelfscan
             </Button>
           </motion.div>
-
-          {/* Value strip — three beats of what Allume does */}
-          <motion.ul
-            variants={item}
-            className="mt-2 flex flex-col gap-x-6 gap-y-2 border-t border-white/15 pt-5 font-display text-sm text-white/80 sm:flex-row sm:flex-wrap sm:items-center"
-          >
-            {VALUES.map((v, i) => (
-              <li key={v} className="flex items-center gap-3">
-                {i > 0 && <span className="hidden h-1 w-1 rounded-full bg-white/40 sm:inline-block" />}
-                <span>{v}</span>
-              </li>
-            ))}
-          </motion.ul>
         </motion.div>
       </div>
     </section>
