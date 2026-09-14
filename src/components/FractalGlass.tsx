@@ -15,6 +15,7 @@ export type FractalPalette =
   | 'honey'
   | 'terracotta'
   | 'terracotta glow'
+  | 'rust glow'
   | 'copper rose'
   | 'desert clay'
 
@@ -57,6 +58,11 @@ const PALETTES: Record<FractalPalette, PaletteDef> = {
   // red-orange terracotta → warm amber/gold highlights.
   'terracotta glow': { base: [0.03, 0.008, 0.004], safe: [0.15, 0.05, 0.03], ember: [0.55, 0.15, 0.05],
     c: [[0.36, 0.05, 0.018], [0.78, 0.15, 0.03], [1.0, 0.34, 0.07], [1.0, 0.6, 0.18], [1.0, 0.9, 0.55]] },
+  // Saturated brand-red fluted field: blobs stay strongly red (very low green/
+  // blue) so the field never desaturates to peach — punchy red that melts into
+  // cream at the edge (HelloMortal).
+  'rust glow': { base: [0.85, 0.09, 0.03], safe: [0.9, 0.4, 0.3], ember: [0.98, 0.32, 0.14],
+    c: [[0.55, 0.045, 0.015], [0.80, 0.07, 0.02], [0.98, 0.12, 0.03], [1.0, 0.18, 0.06], [1.0, 0.28, 0.11]] },
   'copper rose': { base: [0.024, 0.007, 0.006], safe: [0.13, 0.055, 0.042], ember: [0.42, 0.17, 0.11],
     c: [[0.36, 0.055, 0.038], [0.7, 0.18, 0.09], [0.92, 0.38, 0.16], [1.0, 0.62, 0.3], [1.0, 0.86, 0.6]] },
   'desert clay': { base: [0.026, 0.016, 0.008], safe: [0.13, 0.09, 0.055], ember: [0.38, 0.25, 0.14],

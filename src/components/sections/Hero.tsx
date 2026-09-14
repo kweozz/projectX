@@ -15,14 +15,15 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
 }
 
-// 'glass' (default) — the live fractal-glass hero. 'photo' — the fluted photo
-// experiment, kept as an option.
+// 'glass' (default) — split hero: cream + centred type on the left, brand-red
+// fluted glass on the right melting cleanly into the cream. 'photo' — the fluted
+// photo experiment, kept as an option.
 export type HeroVariant = 'photo' | 'glass'
 
 export default function Hero({ variant = 'glass' }: { variant?: HeroVariant }) {
-  return (
-    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
-      {variant === 'photo' ? (
+  if (variant === 'photo') {
+    return (
+      <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
         <FlutedImage
           src={heroImage}
           className="absolute inset-0 size-full"
@@ -35,61 +36,100 @@ export default function Hero({ variant = 'glass' }: { variant?: HeroVariant }) {
           objectPositionX={0.55}
           objectPositionY={0.52}
         />
-      ) : (
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-transparent" />
+        <HeroContent dark />
+      </section>
+    )
+  }
+
+  const revealMask =
+    'linear-gradient(to right, transparent 0%, transparent 26%, black 58%, black 100%)'
+
+  return (
+    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-cream">
+      {/* Brand-red fluted glass on the right, melting into the cream on the left. */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ maskImage: revealMask, WebkitMaskImage: revealMask }}
+      >
         <FractalGlass
           className="absolute inset-0 size-full"
           poster={heroPoster}
-          palette="terracotta glow"
-          loopSeconds={14}
-          fluteWidth={30}
-          fluteStrength={340}
-          fluteShine={58}
-          exposure={1.4}
-          warpStrength={0.09}
-          noiseTravel={0.2}
-          bottomFade={0.6}
-          safeZone="bottom-left"
-          safeStyle="warm tint"
-          safeContrast="4.5:1"
-          safeSize={0.34}
-          safeDarkness={0.42}
-          safeFeather={0.36}
-          safeRichness={0.4}
+          palette="rust glow"
+          loopSeconds={16}
+          fluteWidth={34}
+          fluteStrength={320}
+          fluteShine={48}
+          exposure={1.35}
+          warpStrength={0.07}
+          noiseTravel={0.18}
+          bottomFade={0}
         />
-      )}
-
-      {/* Blend the bottom into the section below. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
-
-      {/* Hero content — bottom-left */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">
-        <motion.div variants={container} initial="hidden" animate="show" className="flex max-w-3xl flex-col gap-8">
-          <div className="flex flex-col gap-6">
-            <motion.h1
-              variants={item}
-              className="max-w-[720px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.2] tracking-[-0.019em] text-white"
-            >
-              <MaskedText onMount>Waar staat uw bedrijf in 2032?</MaskedText>
-            </motion.h1>
-            <motion.p
-              variants={item}
-              className="max-w-xl font-display text-lg leading-[1.34] text-white/90 md:text-2xl"
-            >
-              Strategisch advies voor Vlaamse kmo&apos;s op business en digitaal vlak.
-              Gedragen door heel uw team, geleid door u en uw cijfers.
-            </motion.p>
-          </div>
-
-          <motion.div variants={item} className="flex flex-wrap items-center gap-6">
-            <Button variant="primary" surface="dark" size="sm" to="/contact">
-              Plan een gesprek
-            </Button>
-            <Button variant="tertiary" surface="dark" size="sm" to="/contact" icon arrow="up-right" className="py-2">
-              Of begin met de 2032-zelfscan
-            </Button>
-          </motion.div>
-        </motion.div>
       </div>
+      {/* Keep the type crisp on cream (only over the left column). */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(to right, var(--color-cream) 0%, rgba(251,250,248,0.72) 30%, transparent 50%)',
+        }}
+      />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-cream to-transparent lg:hidden" />
+
+      <HeroContent />
     </section>
+  )
+}
+
+function HeroContent({ dark = false }: { dark?: boolean }) {
+  return (
+    <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-[1600px] px-6 md:px-16 lg:grid-cols-2">
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col items-center justify-center gap-8 py-32 text-center lg:items-center"
+      >
+        <div className="flex flex-col gap-6">
+          <motion.h1
+            variants={item}
+            className={`font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.12] tracking-[-0.019em] ${
+              dark ? 'text-white' : 'text-ink'
+            }`}
+          >
+            <MaskedText onMount>Waar staat uw bedrijf in 2032?</MaskedText>
+          </motion.h1>
+          <motion.p
+            variants={item}
+            className={`mx-auto max-w-[520px] font-display text-lg leading-[1.4] md:text-xl ${
+              dark ? 'text-white/90' : 'text-muted'
+            }`}
+          >
+            Strategisch advies voor Vlaamse kmo&apos;s op business en digitaal vlak.
+            Gedragen door heel uw team, geleid door u en uw cijfers.
+          </motion.p>
+        </div>
+
+        <motion.div variants={item} className="flex flex-wrap items-center justify-center gap-6">
+          <Button variant="primary" surface={dark ? 'dark' : 'light'} size="sm" to="/contact">
+            Plan een gesprek
+          </Button>
+          <Button
+            variant="tertiary"
+            surface={dark ? 'dark' : 'light'}
+            size="sm"
+            to="/contact"
+            icon
+            arrow="up-right"
+            className="py-2"
+          >
+            Of begin met de 2032-zelfscan
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      {/* right column left empty so the fluted glass reads through */}
+      <div aria-hidden />
+    </div>
   )
 }
