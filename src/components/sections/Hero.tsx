@@ -69,11 +69,13 @@ export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
             <FlutedImage
               src={heroImage}
               className="absolute inset-0 size-full"
-              fluteWidth={30}
-              magnify={2.1}
-              edge={0.22}
-              shine={0.08}
-              streak={48}
+              fluteWidth={12}
+              amp={22}
+              edge={0.18}
+              shine={0.1}
+              streak={10}
+              chroma={0.06}
+              sweep={0.06}
               objectPositionX={0.62}
               objectPositionY={0.5}
             />
