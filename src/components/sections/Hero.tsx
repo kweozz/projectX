@@ -3,10 +3,9 @@ import MaskedText from '../MaskedText'
 import Button from '../Button'
 import FractalGlass from '../FractalGlass'
 import heroPoster from '../../assets/hero/hero-bg.webp'
-// TODO: swap for the terracotta glass-facade photo once it's saved under
-// src/assets/hero/ (e.g. hero-facade.webp). Placeholder = a dark, warm image so
-// the screen-blended fractal glow reads correctly.
-import heroImage from '../../assets/process/sunset.webp'
+// Terracotta glass-facade at golden hour — the glass literally reads as the
+// brand #d33414, so the screen-blended fractal glow melts into it.
+import heroImage from '../../assets/hero/hero-facade.webp'
 
 const container = {
   hidden: {},
@@ -36,16 +35,21 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0"
         style={{
           maskImage:
-            'linear-gradient(to right, transparent 0%, transparent 24%, black 62%, black 100%)',
+            'linear-gradient(to right, transparent 0%, transparent 30%, black 70%, black 100%)',
           WebkitMaskImage:
-            'linear-gradient(to right, transparent 0%, transparent 24%, black 62%, black 100%)',
+            'linear-gradient(to right, transparent 0%, transparent 30%, black 70%, black 100%)',
         }}
       >
-        <img src={heroImage} alt="" className="absolute inset-0 size-full object-cover" />
+        <img
+          src={heroImage}
+          alt=""
+          style={{ objectPosition: '62% 50%' }}
+          className="absolute inset-0 size-full object-cover"
+        />
         {/* Fractal glow, screened over the photo; its own mask keeps it strongest
             on the right and clean toward the middle. */}
         <FractalGlass
-          className="absolute inset-0 size-full opacity-70 mix-blend-screen"
+          className="absolute inset-0 size-full opacity-60 mix-blend-screen"
           poster={heroPoster}
           palette="terracotta glow"
           loopSeconds={16}
