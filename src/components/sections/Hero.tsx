@@ -25,49 +25,56 @@ const item = {
 
 export default function Hero() {
   return (
-    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
-      {/* Right-hand composite: real photo with the fractal-glass shader screened
-          over it, so the warm glow "flows" across the facade while its dark base
-          leaves the photo untouched. A feathered mask fades the whole group into
-          the clean ink colour on the left — part colour, part fractal, part photo
-          — instead of a flat gradient fill. */}
+    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
+      {/* Three clean zones, left → right: solid ink (type) · crisp fluted-glass
+          (the shader on its own, no blend, so it reads like real reeded glass) ·
+          the sharp photo. Each fades into the next with a feathered mask — part
+          colour, part fractal, part photo — nothing washed over anything. */}
+
+      {/* 1 · Fractal glass — clean, centred, fades in from the ink on the left. */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           maskImage:
-            'linear-gradient(to right, transparent 0%, transparent 30%, black 70%, black 100%)',
+            'linear-gradient(to right, transparent 0%, transparent 20%, black 42%, black 100%)',
           WebkitMaskImage:
-            'linear-gradient(to right, transparent 0%, transparent 30%, black 70%, black 100%)',
+            'linear-gradient(to right, transparent 0%, transparent 20%, black 42%, black 100%)',
         }}
       >
-        <img
-          src={heroImage}
-          alt=""
-          style={{ objectPosition: '62% 50%' }}
-          className="absolute inset-0 size-full object-cover"
-        />
-        {/* Fractal glow, screened over the photo; its own mask keeps it strongest
-            on the right and clean toward the middle. */}
         <FractalGlass
-          className="absolute inset-0 size-full opacity-60 mix-blend-screen"
+          className="absolute inset-0 size-full"
           poster={heroPoster}
           palette="terracotta glow"
           loopSeconds={16}
-          fluteWidth={34}
-          fluteStrength={300}
-          fluteShine={40}
-          exposure={1.35}
-          warpStrength={0.08}
-          noiseTravel={0.18}
+          fluteWidth={30}
+          fluteStrength={340}
+          fluteShine={58}
+          exposure={1.4}
+          warpStrength={0.09}
+          noiseTravel={0.2}
           bottomFade={0}
         />
       </div>
 
-      {/* Legibility: a soft ink wash over the lower-left where the type sits (not
-          a background fill — it only darkens the copy area). */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/30 to-transparent md:bg-gradient-to-r md:from-ink-900 md:via-ink-900/50 md:to-transparent" />
+      {/* 2 · Photo — sharp, full quality, occupies the right; fades in over the
+          glass so the facade looks like it emerges from behind the reeded glass. */}
+      <img
+        src={heroImage}
+        alt=""
+        style={{
+          objectPosition: '68% 50%',
+          maskImage:
+            'linear-gradient(to right, transparent 0%, transparent 50%, black 70%, black 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent 0%, transparent 50%, black 70%, black 100%)',
+        }}
+        className="pointer-events-none absolute inset-0 size-full object-cover"
+      />
+
+      {/* Legibility: a soft ink wash over the type (not a background fill). */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent md:bg-gradient-to-r md:from-ink md:via-ink/30 md:to-transparent" />
       {/* Blend the very bottom into the section below. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink" />
 
       {/* Hero content — bottom-left */}
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">
