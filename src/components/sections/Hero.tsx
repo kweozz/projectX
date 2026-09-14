@@ -3,8 +3,6 @@ import MaskedText from '../MaskedText'
 import Button from '../Button'
 import FractalGlass from '../FractalGlass'
 import heroPoster from '../../assets/hero/hero-bg.webp'
-// Terracotta glass-facade at golden hour — the glass literally reads as the
-// brand #d33414, so the screen-blended fractal glow melts into it.
 import heroImage from '../../assets/hero/hero-facade.webp'
 
 const container = {
@@ -23,56 +21,63 @@ const item = {
   },
 }
 
-export default function Hero() {
+// Two background treatments, both built on the same "clean ink → …" idea:
+//  • 'photo' — the ink colour flows cleanly straight into the sharp facade photo
+//    (no fractal in between). The glass feel comes from the building itself.
+//  • 'glass' — the ink colour flows into the crisp fluted-glass shader, no photo.
+//    Kept as an option; it's the dark→gradient effect on its own.
+export type HeroVariant = 'photo' | 'glass'
+
+export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Three clean zones, left → right: solid ink (type) · crisp fluted-glass
-          (the shader on its own, no blend, so it reads like real reeded glass) ·
-          the sharp photo. Each fades into the next with a feathered mask — part
-          colour, part fractal, part photo — nothing washed over anything. */}
-
-      {/* 1 · Fractal glass — clean, centred, fades in from the ink on the left. */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          maskImage:
-            'linear-gradient(to right, transparent 0%, transparent 20%, black 42%, black 100%)',
-          WebkitMaskImage:
-            'linear-gradient(to right, transparent 0%, transparent 20%, black 42%, black 100%)',
-        }}
-      >
-        <FractalGlass
-          className="absolute inset-0 size-full"
-          poster={heroPoster}
-          palette="terracotta glow"
-          loopSeconds={16}
-          fluteWidth={30}
-          fluteStrength={340}
-          fluteShine={58}
-          exposure={1.4}
-          warpStrength={0.09}
-          noiseTravel={0.2}
-          bottomFade={0}
+      {variant === 'glass' ? (
+        /* Fractal glass — clean, fades in from the ink on the left. */
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            maskImage:
+              'linear-gradient(to right, transparent 0%, transparent 20%, black 42%, black 100%)',
+            WebkitMaskImage:
+              'linear-gradient(to right, transparent 0%, transparent 20%, black 42%, black 100%)',
+          }}
+        >
+          <FractalGlass
+            className="absolute inset-0 size-full"
+            poster={heroPoster}
+            palette="terracotta glow"
+            loopSeconds={16}
+            fluteWidth={30}
+            fluteStrength={340}
+            fluteShine={58}
+            exposure={1.4}
+            warpStrength={0.09}
+            noiseTravel={0.2}
+            bottomFade={0}
+          />
+        </div>
+      ) : (
+        /* Photo — sharp, full quality; the ink colour dissolves cleanly into it
+           via a single feathered edge (no fractal band). */
+        <img
+          src={heroImage}
+          alt=""
+          style={{
+            objectPosition: '60% 50%',
+            maskImage:
+              'linear-gradient(to right, transparent 0%, transparent 24%, black 54%, black 100%)',
+            WebkitMaskImage:
+              'linear-gradient(to right, transparent 0%, transparent 24%, black 54%, black 100%)',
+          }}
+          className="pointer-events-none absolute inset-0 size-full object-cover"
         />
-      </div>
+      )}
 
-      {/* 2 · Photo — sharp, full quality, occupies the right; fades in over the
-          glass so the facade looks like it emerges from behind the reeded glass. */}
-      <img
-        src={heroImage}
-        alt=""
-        style={{
-          objectPosition: '68% 50%',
-          maskImage:
-            'linear-gradient(to right, transparent 0%, transparent 50%, black 70%, black 100%)',
-          WebkitMaskImage:
-            'linear-gradient(to right, transparent 0%, transparent 50%, black 70%, black 100%)',
-        }}
-        className="pointer-events-none absolute inset-0 size-full object-cover"
-      />
-
-      {/* Legibility: a soft ink wash over the type (not a background fill). */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent md:bg-gradient-to-r md:from-ink md:via-ink/30 md:to-transparent" />
+      {/* Legibility: soft ink washes over the type (not a background fill) — one
+          from the bottom, one from the left — so white copy stays crisp even
+          where bright gold glass sits behind it. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 hidden md:block md:bg-gradient-to-r md:from-ink md:via-ink/40 md:to-transparent" />
       {/* Blend the very bottom into the section below. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink" />
 
