@@ -20,7 +20,7 @@ export default function Home() {
       {/* Sticky opening: the hero pins while the FAQ scrolls up and covers it. */}
       <div className="relative">
         <div className="sticky top-0 h-[100svh] overflow-hidden">
-          <Hero />
+          <Hero variant="glass" />
         </div>
         <div className="relative z-10 overflow-hidden shadow-[0_-30px_60px_-30px_rgba(0,0,0,0.55)]">
           <Faq />
