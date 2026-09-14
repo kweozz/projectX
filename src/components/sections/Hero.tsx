@@ -50,13 +50,14 @@ export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
             className="absolute inset-0 size-full"
             fluteWidth={30}
             amp={17}
-            edge={0.05}
+            edge={0.03}
             shine={0.05}
             chroma={0.03}
             sway={2}
             sweep={0.05}
-            objectPositionX={0.55}
-            objectPositionY={0.5}
+            zoom={2}
+            objectPositionX={0.5}
+            objectPositionY={0.42}
           />
         )}
       </div>

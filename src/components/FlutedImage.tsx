@@ -14,12 +14,12 @@ uniform vec2 uRes, uImgRes;
 uniform float uDpr;
 uniform sampler2D uImg;
 uniform float uFluteWidth, uAmp, uEdge, uShine, uChroma;
-uniform float uSat, uContrast, uSway, uSweep, uTime;
+uniform float uSat, uContrast, uSway, uSweep, uTime, uZoom;
 uniform vec2 uFocus;
 #define PI 3.14159265
 
 vec2 coverUV(vec2 px){
-  float s = max(uRes.x / uImgRes.x, uRes.y / uImgRes.y);
+  float s = max(uRes.x / uImgRes.x, uRes.y / uImgRes.y) * uZoom;
   vec2 d = uImgRes * s;
   vec2 o = (uRes - d) * uFocus;
   return (px - o) / d;
@@ -78,6 +78,7 @@ export interface FlutedImageProps {
   contrast?: number
   sway?: number
   sweep?: number
+  zoom?: number
   animate?: boolean
   objectPositionX?: number
   objectPositionY?: number
@@ -95,14 +96,15 @@ export default function FlutedImage({
   contrast = 1.06,
   sway = 3,
   sweep = 0.08,
+  zoom = 1,
   animate = true,
   objectPositionX = 0.55,
   objectPositionY = 0.5,
 }: FlutedImageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [failed, setFailed] = useState(false)
-  const p = useRef({ fluteWidth, amp, edge, shine, chroma, sat, contrast, sway, sweep, animate, objectPositionX, objectPositionY })
-  p.current = { fluteWidth, amp, edge, shine, chroma, sat, contrast, sway, sweep, animate, objectPositionX, objectPositionY }
+  const p = useRef({ fluteWidth, amp, edge, shine, chroma, sat, contrast, sway, sweep, zoom, animate, objectPositionX, objectPositionY })
+  p.current = { fluteWidth, amp, edge, shine, chroma, sat, contrast, sway, sweep, zoom, animate, objectPositionX, objectPositionY }
 
   useEffect(() => {
     const cv = canvasRef.current
@@ -134,7 +136,7 @@ export default function FlutedImage({
     const u = {
       res: U('uRes'), imgRes: U('uImgRes'), dpr: U('uDpr'), img: U('uImg'),
       fw: U('uFluteWidth'), amp: U('uAmp'), edge: U('uEdge'), shine: U('uShine'), chroma: U('uChroma'),
-      sat: U('uSat'), contrast: U('uContrast'), sway: U('uSway'), sweep: U('uSweep'), time: U('uTime'), focus: U('uFocus'),
+      sat: U('uSat'), contrast: U('uContrast'), sway: U('uSway'), sweep: U('uSweep'), time: U('uTime'), zoom: U('uZoom'), focus: U('uFocus'),
     }
 
     const tex = gl.createTexture()
@@ -168,6 +170,7 @@ export default function FlutedImage({
       gl.uniform1f(u.sway, c.sway)
       gl.uniform1f(u.sweep, c.sweep)
       gl.uniform1f(u.time, clock)
+      gl.uniform1f(u.zoom, c.zoom)
       gl.uniform2f(u.focus, c.objectPositionX, c.objectPositionY)
       gl.uniform1i(u.img, 0)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
