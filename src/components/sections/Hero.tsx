@@ -3,6 +3,10 @@ import MaskedText from '../MaskedText'
 import Button from '../Button'
 import FractalGlass from '../FractalGlass'
 import heroPoster from '../../assets/hero/hero-bg.webp'
+// TODO: swap for the terracotta glass-facade photo once it's saved under
+// src/assets/hero/ (e.g. hero-facade.webp). Placeholder = a dark, warm image so
+// the screen-blended fractal glow reads correctly.
+import heroImage from '../../assets/process/sunset.webp'
 
 const container = {
   hidden: {},
@@ -23,29 +27,42 @@ const item = {
 export default function Hero() {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
-      {/* Live fractal-glass shader — terracotta palette built around the brand
-          #d33414, with a warm-tint WCAG-safe zone bottom-left for the type. */}
-      <FractalGlass
-        className="absolute inset-0 size-full"
-        poster={heroPoster}
-        palette="terracotta glow"
-        loopSeconds={14}
-        fluteWidth={30}
-        fluteStrength={340}
-        fluteShine={58}
-        exposure={1.4}
-        warpStrength={0.09}
-        noiseTravel={0.2}
-        bottomFade={0.6}
-        safeZone="bottom-left"
-        safeStyle="warm tint"
-        safeContrast="4.5:1"
-        safeSize={0.3}
-        safeDarkness={0.42}
-        safeFeather={0.36}
-        safeRichness={0.4}
-      />
-      {/* Blend the bottom into the section below (already brown here, so invisible). */}
+      {/* Right-hand composite: real photo with the fractal-glass shader screened
+          over it, so the warm glow "flows" across the facade while its dark base
+          leaves the photo untouched. A feathered mask fades the whole group into
+          the clean ink colour on the left — part colour, part fractal, part photo
+          — instead of a flat gradient fill. */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          maskImage:
+            'linear-gradient(to right, transparent 0%, transparent 24%, black 62%, black 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent 0%, transparent 24%, black 62%, black 100%)',
+        }}
+      >
+        <img src={heroImage} alt="" className="absolute inset-0 size-full object-cover" />
+        {/* Fractal glow, screened over the photo; its own mask keeps it strongest
+            on the right and clean toward the middle. */}
+        <FractalGlass
+          className="absolute inset-0 size-full opacity-70 mix-blend-screen"
+          poster={heroPoster}
+          palette="terracotta glow"
+          loopSeconds={16}
+          fluteWidth={34}
+          fluteStrength={300}
+          fluteShine={40}
+          exposure={1.35}
+          warpStrength={0.08}
+          noiseTravel={0.18}
+          bottomFade={0}
+        />
+      </div>
+
+      {/* Legibility: a soft ink wash over the lower-left where the type sits (not
+          a background fill — it only darkens the copy area). */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/30 to-transparent md:bg-gradient-to-r md:from-ink-900 md:via-ink-900/50 md:to-transparent" />
+      {/* Blend the very bottom into the section below. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
 
       {/* Hero content — bottom-left */}
