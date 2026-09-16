@@ -14,11 +14,14 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   // Auto-hide: reveal on scroll up, hide on scroll down (always visible at top).
   const [hidden, setHidden] = useState(false)
+  // Glass background once scrolled off the hero, so the type keeps WCAG contrast.
+  const [scrolled, setScrolled] = useState(false)
   const lastY = useRef(0)
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY
+      setScrolled(y > 24)
       const diff = y - lastY.current
       // Ignore tiny jitter; keep the bar shown near the very top.
       if (Math.abs(diff) > 6) {
@@ -40,7 +43,11 @@ export default function Navbar() {
       animate={{ y: isHidden ? '-100%' : 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        open ? 'bg-ink-900' : ''
+        open
+          ? 'bg-ink-900'
+          : scrolled
+            ? 'border-b border-white/10 bg-ink-900/60 backdrop-blur-xl'
+            : ''
       }`}
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">
