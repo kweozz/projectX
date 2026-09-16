@@ -2,94 +2,58 @@ import { motion } from 'framer-motion'
 import MaskedText from '../MaskedText'
 import Button from '../Button'
 import FractalGlass from '../FractalGlass'
-import FlutedImage from '../FlutedImage'
 import heroPoster from '../../assets/hero/hero-bg.webp'
-import heroImage from '../../assets/hero/hero-facade.webp'
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: 0.25 } },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.3 } },
 }
 const item = {
-  hidden: { y: 26, opacity: 0 },
+  hidden: { y: 28, opacity: 0 },
   show: { y: 0, opacity: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
 }
 
-// Split hero on white: left-aligned type on the left, glass on the right melting
-// into the white. 'photo' (default) = the facade through animated fluted glass;
-// 'glass' = the brand-red fractal-glass field (kept option).
-export type HeroVariant = 'photo' | 'glass'
-
-const revealMask =
-  'linear-gradient(to right, transparent 0%, transparent 30%, black 60%, black 100%)'
-
-export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
+// The live fractal-glass hero — terracotta palette built around the brand
+// #d33414, with a warm-tint WCAG-safe zone bottom-left so the type stays crisp.
+export default function Hero() {
   return (
-    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-white">
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{ maskImage: revealMask, WebkitMaskImage: revealMask }}
-      >
-        {variant === 'glass' ? (
-          <FractalGlass
-            className="absolute inset-0 size-full"
-            poster={heroPoster}
-            palette="rust glow"
-            loopSeconds={16}
-            fluteWidth={34}
-            fluteStrength={320}
-            fluteShine={48}
-            exposure={1.35}
-            warpStrength={0.07}
-            noiseTravel={0.18}
-            bottomFade={0}
-          />
-        ) : (
-          <FlutedImage
-            src={heroImage}
-            className="absolute inset-0 size-full"
-            fluteWidth={30}
-            amp={17}
-            edge={0.03}
-            shine={0.05}
-            chroma={0.03}
-            sway={2}
-            sweep={0.05}
-            zoom={2}
-            objectPositionX={0.5}
-            objectPositionY={0.42}
-          />
-        )}
-      </div>
-
-      {/* Keep the type crisp: white behind the left column only. */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(to right, #ffffff 0%, rgba(255,255,255,0.7) 32%, transparent 52%)',
-        }}
+    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-ink-900">
+      <FractalGlass
+        className="absolute inset-0 size-full"
+        poster={heroPoster}
+        palette="terracotta glow"
+        loopSeconds={14}
+        fluteWidth={30}
+        fluteStrength={340}
+        fluteShine={58}
+        exposure={1.4}
+        warpStrength={0.09}
+        noiseTravel={0.2}
+        bottomFade={0.6}
+        safeZone="bottom-left"
+        safeStyle="warm tint"
+        safeContrast="4.5:1"
+        safeSize={0.34}
+        safeDarkness={0.42}
+        safeFeather={0.36}
+        safeRichness={0.4}
       />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent lg:hidden" />
+      {/* Blend the bottom into the section below. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-ink-900" />
 
-      {/* Content — left column, left-aligned */}
-      <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-[1600px] px-6 md:px-16 lg:grid-cols-2">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="flex flex-col items-start justify-center gap-8 py-32"
-        >
+      {/* Hero content — bottom-left */}
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end px-6 pb-16 pt-32 md:px-16 md:pb-24">
+        <motion.div variants={container} initial="hidden" animate="show" className="flex max-w-3xl flex-col gap-8">
           <div className="flex flex-col gap-6">
             <motion.h1
               variants={item}
-              className="max-w-[560px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.12] tracking-[-0.019em] text-ink"
+              className="max-w-[720px] font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.2] tracking-[-0.019em] text-white"
             >
               <MaskedText onMount>Waar staat uw bedrijf in 2032?</MaskedText>
             </motion.h1>
             <motion.p
               variants={item}
-              className="max-w-[500px] font-display text-lg leading-[1.4] text-muted md:text-xl"
+              className="max-w-xl font-display text-lg leading-[1.34] text-white/90 md:text-2xl"
             >
               Strategisch advies voor Vlaamse kmo&apos;s op business en digitaal vlak.
               Gedragen door heel uw team, geleid door u en uw cijfers.
@@ -97,16 +61,14 @@ export default function Hero({ variant = 'photo' }: { variant?: HeroVariant }) {
           </div>
 
           <motion.div variants={item} className="flex flex-wrap items-center gap-6">
-            <Button variant="primary" surface="light" size="sm" to="/contact">
+            <Button variant="primary" surface="dark" size="sm" to="/contact">
               Plan een gesprek
             </Button>
-            <Button variant="tertiary" surface="light" size="sm" to="/contact" icon arrow="up-right" className="py-2">
+            <Button variant="tertiary" surface="dark" size="sm" to="/contact" icon arrow="up-right" className="py-2">
               Of begin met de 2032-zelfscan
             </Button>
           </motion.div>
         </motion.div>
-
-        <div aria-hidden />
       </div>
     </section>
   )

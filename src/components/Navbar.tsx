@@ -12,7 +12,6 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   // Auto-hide: reveal on scroll up, hide on scroll down (always visible at top).
   const [hidden, setHidden] = useState(false)
   const lastY = useRef(0)
@@ -20,7 +19,6 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY
-      setScrolled(y > 24)
       const diff = y - lastY.current
       // Ignore tiny jitter; keep the bar shown near the very top.
       if (Math.abs(diff) > 6) {
@@ -41,8 +39,8 @@ export default function Navbar() {
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: isHidden ? '-100%' : 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed inset-x-0 top-0 z-50 bg-rust transition-shadow duration-300 ${
-        scrolled || open ? 'shadow-[0_2px_24px_-10px_rgba(0,0,0,0.5)]' : ''
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        open ? 'bg-ink-900' : ''
       }`}
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">
