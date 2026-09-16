@@ -36,6 +36,10 @@ export default function Navbar() {
 
   // While the mobile menu is open, keep the bar pinned regardless of direction.
   const isHidden = hidden && !open
+  // Transparent over the hero → give the type a subtle shadow for contrast.
+  // Once the glass background kicks in (scrolled/open), it's not needed.
+  const overHero = !scrolled && !open
+  const typeShadow = overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.45)]' : ''
 
   return (
     <motion.header
@@ -52,7 +56,11 @@ export default function Navbar() {
     >
       <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-16">
         <Link to="/" className="flex items-center">
-          <img src={logo} alt="Allume" className="h-[26px] w-auto" />
+          <img
+            src={logo}
+            alt="Allume"
+            className={`h-[26px] w-auto ${overHero ? 'drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]' : ''}`}
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -62,7 +70,7 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 to={link.href}
-                className="font-display text-base font-medium text-white/90 transition-colors hover:text-white"
+                className={`font-display text-base font-medium text-white/90 transition-colors hover:text-white ${typeShadow}`}
               >
                 {link.label}
               </Link>
@@ -70,7 +78,7 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
-                className="font-display text-base font-medium text-white/90 transition-colors hover:text-white"
+                className={`font-display text-base font-medium text-white/90 transition-colors hover:text-white ${typeShadow}`}
               >
                 {link.label}
               </a>
